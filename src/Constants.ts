@@ -1,0 +1,1 @@
+﻿export const BASE_WEBSOCKET_URL = "/main-socket"
