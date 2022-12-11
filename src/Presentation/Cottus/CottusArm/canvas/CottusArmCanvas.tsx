@@ -1,31 +1,17 @@
 ﻿import {CottusArm} from "../../../../Domain/Models/CottusArm";
 import {useEffect, useRef, useState} from "react";
 import {drawReferential} from "./ReferentialDrawer";
-import {Vector3D} from "../../../../Domain/Models/maths/Vector3D";
 import Color from "../../../utils/Color";
-import {Projection} from "../../../../Domain/Models/maths/projection/Projection";
-import PerspectiveProjection from "../../../../Domain/Models/maths/projection/PerspectiveProjection";
-import {Slider} from "@mui/material";
 import {drawArm} from "./ArticulationDrawer";
+import useCanvasNavigation from "../../../../Domain/UseCases/CanvasNavigationUseCase";
 
 const canvasWidth: number = 700;
 const canvasHeight: number = 700;
 
-const createProjection = (rotX: number, rotZ: number): Projection => {
-    return new PerspectiveProjection(
-        new Vector3D(1000,1000, 1000),
-        new Vector3D(rotX+2*Math.PI/3,0, rotZ-Math.PI/4),
-        100.0, 0.1, 70,
-        canvasWidth/canvasHeight
-    )
-}
-
 const CottusArmCanvas = ({ cottusArm }: { cottusArm: CottusArm | undefined, }) => {
-    const canvasRef = useRef<HTMLCanvasElement>(null);
     
-    const [ rotX, setRotX ] = useState(0);
-    const [ rotZ, setRotZ ] = useState(0);
-    const [ projection, setProjection ] = useState<Projection>();
+    const canvasRef = useRef<HTMLCanvasElement>(null);
+    const { projection, handleMouseEvt, handleScroll } = useCanvasNavigation(canvasRef, canvasWidth, canvasHeight);
     
     useEffect(() => {
         if (projection === undefined) { return; }
@@ -43,9 +29,7 @@ const CottusArmCanvas = ({ cottusArm }: { cottusArm: CottusArm | undefined, }) =
         );
         
         context.fillStyle = new Color(80, 80, 80).toRgbString();
-        context.fillRect(
-            -1, -1,
-            2, 2);
+        context.fillRect(-1, -1, 2, 2);
         
         context.lineWidth = 1/Math.max(canvasWidth, canvasHeight);
 
@@ -57,13 +41,18 @@ const CottusArmCanvas = ({ cottusArm }: { cottusArm: CottusArm | undefined, }) =
         
     }, [ projection, cottusArm ])
 
-    // Recompute the projection each time the rotX or rotZ changes
-    useEffect(() => { setProjection(createProjection(rotX, rotZ)); }, [rotX, rotZ])
     
-    return (
-        <div className={"cottus-arm-canvas"}>
-            <canvas width={canvasWidth} height={canvasHeight} ref={canvasRef}/>
-        </div>);
+    
+    return (<div className={"cottus-arm-canvas"}>
+        <canvas 
+            onWheelCapture={handleScroll}
+            onMouseDownCapture={handleMouseEvt} onMouseUpCapture={handleMouseEvt} 
+            onMouseMoveCapture={handleMouseEvt}
+            width={canvasWidth} 
+            height={canvasHeight} 
+            ref={canvasRef}
+        />
+    </div>);
 }
 
 export default CottusArmCanvas;

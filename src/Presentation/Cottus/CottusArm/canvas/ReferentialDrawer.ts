@@ -60,11 +60,11 @@ function drawReferentialAxis(
     base: Projection,
 ) {
     const defaultLineWidth = ctx.lineWidth;
-    const drawAxis = (axis: Axis3D, range: number, color: Color, base: Projection) => {
+    const drawAxis = (direction: Vector3D, range: number, color: Color, base: Projection) => {
         ctx.strokeStyle = color.toRgbString();
 
         const [ v0, v1 ] = base.projectAll([
-            Vector3D.Zero, axis.unitVector.scale(range)
+            Vector3D.Zero, direction.normalized().scale(range)
         ]);
         const { x: x0, y: y0 } = v0;
         const { x: x1, y: y1 } = v1;
@@ -75,9 +75,10 @@ function drawReferentialAxis(
         ctx.stroke();
     }
     
-    ctx.lineWidth = defaultLineWidth*2;
-    drawAxis(Axis3D.X, xReferentialRange/1.9, Color.Red, base);
-    drawAxis(Axis3D.Y, yReferentialRange/1.9, Color.Green, base);
-    drawAxis(Axis3D.Z, zReferentialRange/1.9, Color.Blue, base);
+    ctx.lineWidth = defaultLineWidth*8;
+    drawAxis(Axis3D.X.unitVector, xReferentialRange/1.9, Color.Red, base);
+    drawAxis(Axis3D.Y.unitVector, yReferentialRange/1.9, Color.Green, base);
+    drawAxis(Axis3D.Z.unitVector, zReferentialRange/1.9, Color.Blue, base);
+    
     ctx.lineWidth = defaultLineWidth;
 }

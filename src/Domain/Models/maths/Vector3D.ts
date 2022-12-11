@@ -92,4 +92,10 @@ export class Vector3D {
             .rotatedAtOriginAround(1, eulerAngles.y)
             .rotatedAtOriginAround(2, eulerAngles.z)
     }
+
+    rotatedInverseAtOriginUsing(eulerAngles: Vector3D): Vector3D {
+        return this.rotatedAtOriginAround(2, eulerAngles.z)
+            .rotatedAtOriginAround(1, eulerAngles.y)
+            .rotatedAtOriginAround(0, eulerAngles.x)
+    }
 }

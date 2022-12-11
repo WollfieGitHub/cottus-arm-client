@@ -3,6 +3,7 @@ import Color from "../../../utils/Color";
 import getColorOf from "./ArticulationColorAdapter";
 import {Projection} from "../../../../Domain/Models/maths/projection/Projection";
 import {CottusArm} from "../../../../Domain/Models/CottusArm";
+import canvasNavigationUseCase from "../../../../Domain/UseCases/CanvasNavigationUseCase";
 
 const articulationRadius: number = 2.0;
 
@@ -24,6 +25,8 @@ function drawArticulation(
     const color: Color = getColorOf(articulation);
     ctx.strokeStyle = color.darker().toRgbString();
     ctx.fillStyle = color.toRgbString();
+    const defaultLineWidth: number = ctx.lineWidth;
+    ctx.lineWidth = 16*defaultLineWidth;
     
     const { x: x0, y: y0 } = base.project(articulation.globalPosition);
     
@@ -43,4 +46,5 @@ function drawArticulation(
     ctx.moveTo(x0, y0);
     ctx.lineTo(x1, y1);
     ctx.stroke();
+    ctx.lineWidth = defaultLineWidth;
 }

@@ -21,3 +21,8 @@ export abstract class Projection {
         return worldSpace.map(v => this.project(v));
     }
 }
+
+export enum ProjectionType {
+    Orthographic,
+    Perspective
+}

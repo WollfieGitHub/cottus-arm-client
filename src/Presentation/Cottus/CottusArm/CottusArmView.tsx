@@ -6,11 +6,11 @@ import CottusArmCanvas from "./canvas/CottusArmCanvas";
 const CottusArmView = () => {
     const { cottusArm } = useCottusArmViewModel();
 
-    return (<Card sx={{ display: 'flex' }}>
-        <Box sx={{ display: 'flex', flexDirection: 'column' }}>
+    return (
+        <Card sx={{ display: 'flex', padding: 2, width: "fit-content", margin: "0 auto 0 auto"}}>
             <CottusArmCanvas cottusArm={cottusArm} />
-        </Box>
-    </Card>)
+        </Card>
+    );
 }
 
 export default CottusArmView;
