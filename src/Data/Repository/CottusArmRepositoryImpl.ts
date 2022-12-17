@@ -15,7 +15,7 @@ export class CottusArmRepositoryImpl implements CottusArmRepository, DatasourceO
         this.datasource.subscribe(this);
     }
     
-    onUpdate(data: CottusArm) { this.subscribers.forEach(subscriber => subscriber.onUpdate(data)); }
+    onUpdate(data: CottusArm) {this.subscribers.forEach(subscriber => subscriber.onUpdate(data)); }
 
     subscribe(subscriber: DatasourceObserver<CottusArm>): void { this.subscribers.add(subscriber); }
     unsubscribe(subscriber: DatasourceObserver<CottusArm>): void { this.subscribers.delete(subscriber); }

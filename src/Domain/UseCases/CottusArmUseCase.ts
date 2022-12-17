@@ -12,6 +12,7 @@ export default class CottusArmUseCase implements RepositoryObserver<CottusArm>, 
 
     constructor(armRepository: CottusArmRepository) { 
         this.armRepository = armRepository;
+        this.armRepository.subscribe(this);
     }
 
     onUpdate(data: CottusArm): void { this.subscribers.forEach(subscriber => subscriber(data)); }

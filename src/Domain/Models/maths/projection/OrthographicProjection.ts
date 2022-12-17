@@ -35,7 +35,7 @@ export class OrthographicProjection extends Projection{
         return new Vector3D(
             projected.projectedOnto(this.b1) / (this.viewportWidth / 2),
             projected.projectedOnto(this.b2) / (this.viewportHeight / 2),
-            v.projectedOnto(this.normal)
+            0
         );
     }
 

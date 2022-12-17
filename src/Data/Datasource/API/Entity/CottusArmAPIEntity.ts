@@ -1,5 +1,6 @@
-﻿import {ArticulationAPIEntity} from "./ArticulationAPIEntity";
+﻿import {JointAPIEntity} from "./JointAPIEntity";
 
 export interface CottusArmAPIEntity {
-    articulations: ArticulationAPIEntity[]
+    joints: JointAPIEntity[],
+    nbJoints: number
 }

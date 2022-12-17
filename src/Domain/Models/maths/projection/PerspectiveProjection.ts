@@ -54,7 +54,7 @@ export default class PerspectiveProjection extends Projection {
         // be centered on the arm
         if (rZ <= 0) { return PerspectiveProjection.InvisibleVector; }
         
-        return new Vector3D(xClip, yClip, zClip);
+        return new Vector3D(xClip, yClip, 0);
     }
     
 }

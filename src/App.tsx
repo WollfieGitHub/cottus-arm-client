@@ -1,6 +1,6 @@
 import React from 'react';
 import "./App.scss";
-import CottusArmView from "./Presentation/Cottus/CottusArm/CottusArmView";
+import CottusArmView from "./View/Cottus/CottusArm/CottusArmView";
 import {createTheme, ThemeProvider, Typography} from "@mui/material";
 
 const theme = createTheme({
