@@ -1,5 +1,5 @@
-﻿import {Axis3D} from "./maths/Axis3D";
-import {Vector3D} from "./maths/Vector3D";
+﻿import {Axis3D} from "./Maths/Axis3D";
+import {Vector3D} from "./Maths/Vector3D";
 
 export interface Joint {
     length: number,

@@ -1,9 +1,9 @@
 ﻿import React, {useEffect, useState} from "react";
-import {Vector3D} from "../../../../../Domain/Models/maths/Vector3D";
-import {Projection, ProjectionType} from "../../../../../Domain/Models/maths/projection/Projection";
-import {Axis3D} from "../../../../../Domain/Models/maths/Axis3D";
-import {OrthographicProjection} from "../../../../../Domain/Models/maths/projection/OrthographicProjection";
-import PerspectiveProjection from "../../../../../Domain/Models/maths/projection/PerspectiveProjection";
+import {Vector3D} from "../../../../../Domain/Models/Maths/Vector3D";
+import {Projection, ProjectionType} from "../../../../../Domain/Models/Maths/projection/Projection";
+import {Axis3D} from "../../../../../Domain/Models/Maths/Axis3D";
+import {OrthographicProjection} from "../../../../../Domain/Models/Maths/projection/OrthographicProjection";
+import PerspectiveProjection from "../../../../../Domain/Models/Maths/projection/PerspectiveProjection";
 import Canvas from "../../../../UIBase/Canvas";
 
 const createProjection = (

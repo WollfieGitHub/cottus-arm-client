@@ -1,5 +1,5 @@
 ﻿import {CottusArm} from "../../../../../Domain/Models/CottusArm";
-import {Projection} from "../../../../../Domain/Models/maths/projection/Projection";
+import {Projection} from "../../../../../Domain/Models/Maths/projection/Projection";
 import React, {useState} from "react";
 import {X509Certificate} from "crypto";
 

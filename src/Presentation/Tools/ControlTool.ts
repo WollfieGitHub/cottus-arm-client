@@ -1,6 +1,6 @@
-﻿import SFVector2DEquation from "../../Domain/Models/maths/SFVector2DEquation";
+﻿import SFVector2DEquation from "../../Domain/Models/Maths/SFVector2DEquation";
 import {Joint} from "../../Domain/Models/Joint";
-import {Projection} from "../../Domain/Models/maths/projection/Projection";
+import {Projection} from "../../Domain/Models/Maths/projection/Projection";
 import CanvasTool from "../UIBase/CanvasTool";
 
 export abstract class ControlTool implements CanvasTool{

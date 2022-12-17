@@ -1,13 +1,13 @@
 ﻿import {Joint} from "../../Domain/Models/Joint";
 import {CottusArm} from "../../Domain/Models/CottusArm";
-import {Projection} from "../../Domain/Models/maths/projection/Projection";
+import {Projection} from "../../Domain/Models/Maths/projection/Projection";
 import {withLineWidth} from "../utils/CanvasUtil";
-import {Axis3D} from "../../Domain/Models/maths/Axis3D";
+import {Axis3D} from "../../Domain/Models/Maths/Axis3D";
 import Color from "../utils/Color";
-import {Vector3D} from "../../Domain/Models/maths/Vector3D";
+import {Vector3D} from "../../Domain/Models/Maths/Vector3D";
 import {ControlTool} from "./ControlTool";
-import SFVector2DEquation from "../../Domain/Models/maths/SFVector2DEquation";
-import {Ellipse} from "../../Domain/Models/maths/Shapes/Ellipse";
+import SFVector2DEquation from "../../Domain/Models/Maths/SFVector2DEquation";
+import {Ellipse} from "../../Domain/Models/Maths/Shapes/Ellipse";
 
 const rotateToolSize = 100;
 

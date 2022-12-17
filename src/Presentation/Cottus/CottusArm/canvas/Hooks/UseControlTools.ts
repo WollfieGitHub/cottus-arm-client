@@ -1,10 +1,10 @@
 ﻿import RotateTool from "../../../../Tools/RotateTool";
-import {Axis3D} from "../../../../../Domain/Models/maths/Axis3D";
+import {Axis3D} from "../../../../../Domain/Models/Maths/Axis3D";
 import MoveTool from "../../../../Tools/MoveTool";
-import {Vector2D} from "../../../../../Domain/Models/maths/Vector2D";
+import {Vector2D} from "../../../../../Domain/Models/Maths/Vector2D";
 import {useState} from "react";
 import {ControlTool} from "../../../../Tools/ControlTool";
-import {Projection} from "../../../../../Domain/Models/maths/projection/Projection";
+import {Projection} from "../../../../../Domain/Models/Maths/projection/Projection";
 import {Joint} from "../../../../../Domain/Models/Joint";
 
 // Tools to rotate a node

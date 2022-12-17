@@ -1,8 +1,8 @@
-﻿import {Projection, ProjectionType} from "../../Domain/Models/maths/projection/Projection";
+﻿import {Projection, ProjectionType} from "../../Domain/Models/Maths/projection/Projection";
 import CanvasTool from "../UIBase/CanvasTool";
 import {ClickableCanvasButton, OnClick} from "../UIBase/ClickableCanvasButton";
-import {Rect} from "../../Domain/Models/maths/Shapes/Rect";
-import {Vector2D} from "../../Domain/Models/maths/Vector2D";
+import {Rect} from "../../Domain/Models/Maths/Shapes/Rect";
+import {Vector2D} from "../../Domain/Models/Maths/Vector2D";
 
 export default class ChangeProjectionTool extends ClickableCanvasButton implements CanvasTool {
     

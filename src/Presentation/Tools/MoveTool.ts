@@ -1,12 +1,12 @@
 ﻿import {CottusArm} from "../../Domain/Models/CottusArm";
 import {Joint} from "../../Domain/Models/Joint";
-import {Vector3D} from "../../Domain/Models/maths/Vector3D";
-import {Axis3D} from "../../Domain/Models/maths/Axis3D";
-import {Projection} from "../../Domain/Models/maths/projection/Projection";
+import {Vector3D} from "../../Domain/Models/Maths/Vector3D";
+import {Axis3D} from "../../Domain/Models/Maths/Axis3D";
+import {Projection} from "../../Domain/Models/Maths/projection/Projection";
 import Color from "../utils/Color";
 import {withLineWidth} from "../utils/CanvasUtil";
 import {ControlTool} from "./ControlTool";
-import SFVector2DEquation from "../../Domain/Models/maths/SFVector2DEquation";
+import SFVector2DEquation from "../../Domain/Models/Maths/SFVector2DEquation";
 
 
 export default class MoveTool extends ControlTool {

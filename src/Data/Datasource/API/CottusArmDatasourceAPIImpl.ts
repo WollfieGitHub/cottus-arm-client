@@ -4,7 +4,7 @@ import {typedFetch} from "../utils/DatasourceUtils";
 import {CottusArmAPIEntity} from "./Entity/CottusArmAPIEntity";
 import {JointAPIEntity} from "./Entity/JointAPIEntity";
 import {Joint} from "../../../Domain/Models/Joint";
-import {Vector3D} from "../../../Domain/Models/maths/Vector3D";
+import {Vector3D} from "../../../Domain/Models/Maths/Vector3D";
 import {Vector3DAPIEntity} from "./Entity/Vector3DAPIEntity";
 import WebsocketDatasource from "./WebsocketDatasource";
 import {DatasourceObserver} from "../Observer/DatasourceObserver";

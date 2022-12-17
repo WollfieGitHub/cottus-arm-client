@@ -1,6 +1,6 @@
 ﻿import {RefObject} from "react";
-import {Vector2D} from "../../Domain/Models/maths/Vector2D";
-import {Vector3D} from "../../Domain/Models/maths/Vector3D";
+import {Vector2D} from "../../Domain/Models/Maths/Vector2D";
+import {Vector3D} from "../../Domain/Models/Maths/Vector3D";
 
 export type HandledEvent = ( 
     "mouseMove" 
