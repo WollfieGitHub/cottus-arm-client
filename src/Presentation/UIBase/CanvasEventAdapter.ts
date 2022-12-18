@@ -25,7 +25,7 @@ export default class CanvasEventAdapter {
         this.canvas = canvas;
         this.canvas.addEventListener('wheel', this.handleMouseEvent);
         this.canvas.addEventListener('mousedown', this.handleMouseEvent);
-        this.canvas.addEventListener('mousedown', this.handleMouseEvent);
+        this.canvas.addEventListener('mouseup', this.handleMouseEvent);
         this.canvas.addEventListener('click', this.handleMouseEvent);
         this.canvas.addEventListener('contextmenu', this.handleMouseEvent);
         this.canvas.addEventListener('mousemove', this.handleMouseEvent);
@@ -34,11 +34,10 @@ export default class CanvasEventAdapter {
     private handleMouseEvent = (evt: any): void => {
         // Forbid the propagation of the event if it was on the canvas
         evt.preventDefault();
-        if (evt.type === 'mousemove') { 
-            this.updateMouseState(evt);
-            this.dispatch('mouseMove', this.getMouseState()); 
-        }
-        if (evt.type === 'mouseUp' || evt.type === 'mouseDown') { this.handleMouseBtnEvent(evt); }
+        if (evt.type === 'mousemove') { this.handleMouseMoveEvent(evt); }
+        if (evt.type === 'mouseup') { this.handleMouseBtnEvent('mouseUp', evt); }
+        if (evt.type === 'mousedown') { this.handleMouseBtnEvent('mouseDown', evt); }
+        if (evt.type === 'click') { this.handleMouseBtnEvent('mouseClick', evt); }
     }
 
     private subscribers: Map<HandledEvent, Set<CanvasEventHandler>> = new Map();
@@ -54,7 +53,7 @@ export default class CanvasEventAdapter {
         this.subscribers.get(event).add(callback);
     }
     
-    private updateMouseState = (evt: MouseEvent): void => {
+    private handleMouseMoveEvent = (evt: MouseEvent): void => {
         if (this.canvas === null) { return; }
         const ctx = this.canvas.getContext("2d");
         if (ctx === null) { return; }
@@ -70,6 +69,8 @@ export default class CanvasEventAdapter {
         
         this.lastMouseX = x;
         this.lastMouseY = y;
+
+        this.dispatch('mouseMove', {});
     }
 
     private getMouseState(): any {
@@ -79,8 +80,8 @@ export default class CanvasEventAdapter {
         };
     }
     
-    private handleMouseBtnEvent(evt: MouseEvent) {
-        this.dispatch(evt.type === 'mouseDown' ? 'mouseDown' : 'mouseUp', {
+    private handleMouseBtnEvent(type: HandledEvent,  evt: MouseEvent) {
+        this.dispatch(type, {
             button: evt.button,
         });
     }
@@ -89,7 +90,7 @@ export default class CanvasEventAdapter {
     private dispatch(event: HandledEvent, args: any): void {
         if (!this.subscribers.has(event)) { this.subscribers.set(event, new Set()); }
         // @ts-ignore : Thinks the set can still be undefined
-        this.subscribers.get(event).forEach(callback => callback.apply({
+        this.subscribers.get(event).forEach(callback => callback({
             ...args,
             ...this.getMouseState(),
             type: event

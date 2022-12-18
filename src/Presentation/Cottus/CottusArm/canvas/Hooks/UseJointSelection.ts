@@ -4,7 +4,7 @@ import React, {useEffect, useState} from "react";
 import {X509Certificate} from "crypto";
 import Canvas from "../../../../UIBase/Canvas";
 
-type Vector2D = {x:number,y:number};
+type Vector2D = {x:number, y:number};
 const selectionRadius: number = 0.1;
 
 const useJointSelection = (
@@ -19,8 +19,11 @@ const useJointSelection = (
     const distance = (a: Vector2D, b: Vector2D) => {
         return (b.x-a.x)*(b.x-a.x) + (b.y-a.y)*(b.y-a.y);
     }
+    
+    const canvasIsLoaded: boolean = canvas !== undefined;
 
-    const onCanvasMove = ({ pos }: any): void => {
+    const onCanvasMove = (args: any) => {
+        const { pos } = args;
         if (arm === undefined || projection === undefined) { return; }
 
         const { x, y } = pos;
@@ -40,17 +43,18 @@ const useJointSelection = (
         else { setHoveredJoint(undefined); }
     }
 
-    const onCanvasClick = () => {
+    const onCanvasClick = (args: any) => {
         if (hoveredJoint !== undefined) { setSelectedJoint(hoveredJoint); }
         // Wants to deselect, so clicked on no joint
         else { setSelectedJoint(undefined); }
     }
     
     useEffect(() => {
-        canvas?.addListener("mouseMove", () => onCanvasMove);
-        canvas?.addListener("mouseClick", () => onCanvasClick);
         
-    }, [ canvas ])
+        canvas?.addListener("mouseMove", onCanvasMove);
+        canvas?.addListener("mouseClick", onCanvasClick);
+        
+    }, [canvasIsLoaded])
     
     return { hoveredJoint, selectedJoint }
 }

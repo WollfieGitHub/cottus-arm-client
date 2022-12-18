@@ -23,9 +23,10 @@ export default function useCottusArmViewModel() {
     const [ canvas, setCanvas ] = useState<Canvas>();
 
     const canvasRef = useRef<HTMLCanvasElement>(null);
+    
     const { projection, setProjection } = useCanvasNavigation(canvas, canvasWidth, canvasHeight);
-
     const { selectedJoint, hoveredJoint} = useJointSelection(canvas, cottusArm, projection);
+    
     const { draw: drawTools } = useControlTools();
     
     // Execute once, on component mount
@@ -52,7 +53,6 @@ export default function useCottusArmViewModel() {
         );
 
         const redraw = (ctx: CanvasRenderingContext2D) => {
-            console.log("redraw");
             
             ctx.fillStyle = new Color(80, 80, 80).toRgbString();
             ctx.fillRect(-1, -1, 2, 2);

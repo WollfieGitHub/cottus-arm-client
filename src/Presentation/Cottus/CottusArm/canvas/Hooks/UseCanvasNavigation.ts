@@ -57,35 +57,36 @@ const useCanvasNavigation = (
     
     const [ projectionType, setProjectionType ] = useState<ProjectionType>(ProjectionType.Orthographic);
     const [ projection, setProjection ] = useState<Projection>();
+
+    // Handle zoom navigation
+    const handleScroll = (args: any) => {
+        const { deltaScroll } = args;
+        const delta = deltaScroll.y*0.001;
+        setZoomLevel(Math.max(zoomLevel+delta, 0.01));
+    }
+
+    // Handle rotation navigation
+    const handleMouseBtn = (args: any) => {
+        const { button, type, deltaPos } = args;
+        
+        if (!rightClick && type === "mouseDown" && button === 2) { setRightClick(true); }
+        else if (rightClick && type === "mouseUp" && button === 2) { setRightClick(false); }
+        
+        if (rightClick) {
+            console.log(deltaPos)
+            setRotX(rotX-deltaPos.y*0.01);
+            setRotZ(rotZ+deltaPos.x*0.01);
+        }
+    }
+
+    const canvasIsLoaded: boolean = canvas !== undefined;
     
     useEffect(() => {
-
-        // Handle zoom navigation
-        // @ts-ignore
-        const handleScroll = ({ deltaScroll }) => {
-            const delta = deltaScroll.y*0.001;
-            setZoomLevel(Math.max(zoomLevel+delta, 0.01));
-        }
-
-        // Handle rotation navigation
-        // @ts-ignore
-        const handleMouseBtn = ({ button, type, deltaPos }) => {
-            if (!rightClick && type === "mouseDown" && button === 2) { setRightClick(true); }
-            else if (rightClick && type === "mouseUp" && button === 2) { setRightClick(false); }
-
-            console.log("event");
-            
-            if (rightClick) {
-                console.log("CLIIIIICCCKKKK")
-                setRotX(rotX-deltaPos.y*0.01);
-                setRotZ(rotZ+deltaPos.x*0.01);
-            }
-        }
-        
-        canvas?.addListener("scroll", handleScroll);
-        canvas?.addListener("mouseDown", handleMouseBtn);
-        canvas?.addListener("mouseUp", handleMouseBtn);
-    }, [ canvas ])
+        canvas?.addListener('scroll', handleScroll);
+        canvas?.addListener('mouseDown', handleMouseBtn);
+        canvas?.addListener('mouseUp', handleMouseBtn);
+        canvas?.addListener('mouseMove', handleMouseBtn);
+    }, [ canvasIsLoaded ])
 
     // Recompute the projection each time the rotX or rotZ changes
     useEffect(() => {
