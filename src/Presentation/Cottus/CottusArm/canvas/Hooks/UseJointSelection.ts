@@ -1,13 +1,14 @@
 ﻿import {CottusArm} from "../../../../../Domain/Models/CottusArm";
 import {Projection} from "../../../../../Domain/Models/Maths/projection/Projection";
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import {X509Certificate} from "crypto";
+import Canvas from "../../../../UIBase/Canvas";
 
 type Vector2D = {x:number,y:number};
 const selectionRadius: number = 0.1;
 
 const useJointSelection = (
-    canvasRef: React.RefObject<HTMLCanvasElement>,
+    canvas: Canvas | undefined,
     arm: CottusArm | undefined,
     projection: Projection | undefined
 ) => {
@@ -18,15 +19,12 @@ const useJointSelection = (
     const distance = (a: Vector2D, b: Vector2D) => {
         return (b.x-a.x)*(b.x-a.x) + (b.y-a.y)*(b.y-a.y);
     }
-    
-    const resetSelection = () => {
-        setHoveredJoint(undefined);
-        setSelectedJoint(undefined);
-    }
-    
-    const onCanvasMove = (x: number, y:number) => {
+
+    const onCanvasMove = ({ pos }: any): void => {
         if (arm === undefined || projection === undefined) { return; }
-        
+
+        const { x, y } = pos;
+
         // Sort all joints with their distance to clicked location
         const joints = arm.joints.map(joint => {
             return { proj: projection.project(joint.globalPosition), name: joint.name };
@@ -35,20 +33,26 @@ const useJointSelection = (
         });
         // Means there is no joint in the arm
         if (joints.length <= 0) { setHoveredJoint(undefined); return; }
-        
+
         const candidate = joints[0];
         // Set the hovered joint or remove it depending on distance
         if (distance(candidate.proj, {x,y}) <= selectionRadius) { setHoveredJoint(candidate.name); }
         else { setHoveredJoint(undefined); }
     }
-    
+
     const onCanvasClick = () => {
         if (hoveredJoint !== undefined) { setSelectedJoint(hoveredJoint); }
         // Wants to deselect, so clicked on no joint
         else { setSelectedJoint(undefined); }
     }
     
-    return { onMouseMoved: onCanvasMove, onMouseClicked: onCanvasClick, hoveredJoint, selectedJoint }
+    useEffect(() => {
+        canvas?.addListener("mouseMove", () => onCanvasMove);
+        canvas?.addListener("mouseClick", () => onCanvasClick);
+        
+    }, [ canvas ])
+    
+    return { hoveredJoint, selectedJoint }
 }
 
 export default useJointSelection;

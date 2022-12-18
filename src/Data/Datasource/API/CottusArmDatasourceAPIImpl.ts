@@ -1,11 +1,9 @@
 ﻿import CottusArmDatasource from "../CottusArmDatasource";
 import {CottusArm} from "../../../Domain/Models/CottusArm";
-import {typedFetch} from "../utils/DatasourceUtils";
 import {CottusArmAPIEntity} from "./Entity/CottusArmAPIEntity";
 import {JointAPIEntity} from "./Entity/JointAPIEntity";
 import {Joint} from "../../../Domain/Models/Joint";
-import {Vector3D} from "../../../Domain/Models/Maths/Vector3D";
-import {Vector3DAPIEntity} from "./Entity/Vector3DAPIEntity";
+import {fromApi} from "./Entity/Vector3DAPIEntity";
 import WebsocketDatasource from "./WebsocketDatasource";
 import {DatasourceObserver} from "../Observer/DatasourceObserver";
 
@@ -40,15 +38,7 @@ function mapEntity(apiEntity: JointAPIEntity): Joint {
         length: apiEntity.length,
         name: apiEntity.name,
         parent: apiEntity.parent === null ? null : mapEntity(apiEntity.parent),
-        globalPosition: mapVector(apiEntity.transform.origin),
+        globalPosition: fromApi(apiEntity.transform.origin),
         angleRad: apiEntity.angleRad
     });
-}
-
-function mapVector(vectorEntity: Vector3DAPIEntity): Vector3D {
-    return (new Vector3D(
-        vectorEntity.x,
-        vectorEntity.y,
-        vectorEntity.z,
-    ));
 }

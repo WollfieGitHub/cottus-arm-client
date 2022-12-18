@@ -14,21 +14,21 @@ export type CanvasEventHandler = (a: any) => void;
 
 export default class CanvasEventAdapter {
 
-    private canvasRef: RefObject<HTMLCanvasElement>;
+    private canvas: HTMLCanvasElement;
     private lastMouseX: number = 0;
     private lastMouseY: number = 0;
     
     private deltaMouseX: number = 0;
     private deltaMouseY: number = 0;
 
-    constructor(canvasRef: RefObject<HTMLCanvasElement>) {
-        this.canvasRef = canvasRef;
-        this.canvasRef.current?.addEventListener('wheel', this.handleMouseEvent);
-        this.canvasRef.current?.addEventListener('mousedown', this.handleMouseEvent);
-        this.canvasRef.current?.addEventListener('mousedown', this.handleMouseEvent);
-        this.canvasRef.current?.addEventListener('click', this.handleMouseEvent);
-        this.canvasRef.current?.addEventListener('contextmenu', this.handleMouseEvent);
-        this.canvasRef.current?.addEventListener('mousemove', this.handleMouseEvent);
+    constructor (canvas: HTMLCanvasElement) {
+        this.canvas = canvas;
+        this.canvas.addEventListener('wheel', this.handleMouseEvent);
+        this.canvas.addEventListener('mousedown', this.handleMouseEvent);
+        this.canvas.addEventListener('mousedown', this.handleMouseEvent);
+        this.canvas.addEventListener('click', this.handleMouseEvent);
+        this.canvas.addEventListener('contextmenu', this.handleMouseEvent);
+        this.canvas.addEventListener('mousemove', this.handleMouseEvent);
     }
     
     private handleMouseEvent = (evt: any): void => {
@@ -55,12 +55,11 @@ export default class CanvasEventAdapter {
     }
     
     private updateMouseState = (evt: MouseEvent): void => {
-        const canvas = this.canvasRef.current;
-        if (canvas === null) { return; }
-        const ctx = canvas.getContext("2d");
+        if (this.canvas === null) { return; }
+        const ctx = this.canvas.getContext("2d");
         if (ctx === null) { return; }
-
-        const rect = canvas.getBoundingClientRect();
+        
+        const rect = this.canvas.getBoundingClientRect();
 
         const {x, y} = ctx.getTransform().inverse().transformPoint(new DOMPoint(
             evt.clientX - rect.left, evt.clientY - rect.top
@@ -90,7 +89,7 @@ export default class CanvasEventAdapter {
     private dispatch(event: HandledEvent, args: any): void {
         if (!this.subscribers.has(event)) { this.subscribers.set(event, new Set()); }
         // @ts-ignore : Thinks the set can still be undefined
-        this.subscribers.get(event).forEach(callback => callback({
+        this.subscribers.get(event).forEach(callback => callback.apply({
             ...args,
             ...this.getMouseState(),
             type: event

@@ -30,11 +30,13 @@ export default function useCottusArmViewModel() {
     
     // Execute once, on component mount
     useEffect(() => {
+        if (canvasRef.current === null) { return; }
+        
         // TODO CHECK Note to self : Putting this out of the useEffect hook like in the help page
         // is a stupid move because it subscribes every time the components renders and
         // that might be why the page starts freezing after a while
         UseCase.subscribe((data) => { setCottusArm(data); });
-        setCanvas(new Canvas(canvasRef))
+        setCanvas(new Canvas(canvasRef.current))
     }, [])
 
     // Execute once every frame drawn on the canvas
@@ -50,6 +52,8 @@ export default function useCottusArmViewModel() {
         );
 
         const redraw = (ctx: CanvasRenderingContext2D) => {
+            console.log("redraw");
+            
             ctx.fillStyle = new Color(80, 80, 80).toRgbString();
             ctx.fillRect(-1, -1, 2, 2);
 

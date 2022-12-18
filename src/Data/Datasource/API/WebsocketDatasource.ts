@@ -16,6 +16,8 @@ export default abstract class WebsocketDatasource<T> {
     /** True if the last reconnection was successful, false otherwise */
     private lastReconnectionSuccessful: boolean = false;
     
+    private currentTimeout: NodeJS.Timeout|null = null;
+    
     protected constructor(socketEndPoint: string, autoReconnect: boolean) {
         this.url = "ws://localhost:8080" + socketEndPoint;
         this.autoReconnect = autoReconnect;
@@ -26,13 +28,14 @@ export default abstract class WebsocketDatasource<T> {
     }
     
     private getIdThenConnect(): void {
-        const self = this;
         fetch("/api/socket-token")
-            .then(data => data.text())
-            .then(self.connect);
+            .then(response => {
+                if (response.ok) { response.text().then(this.connect); } 
+                else if (this.autoReconnect) { this.tryReconnect(); }
+            });
     }
     
-    /** "ES6 : Arrow functions, by default, do not rescope "this" */
+    /** "ES6 : Arrow functions, by default, do not re-scope "this" */
     private connect = (connectionId: string): void => {
         const socketUrl: string = this.url + `/${connectionId}`;
         this.socket = new WebSocket(socketUrl);
@@ -57,16 +60,19 @@ export default abstract class WebsocketDatasource<T> {
         this.socket.onmessage = (ev) => { this.onMessageReceived(JSON.parse(ev.data) as T); };
     }
     
-    private tryReconnect() {
+    private tryReconnect = () => {
         if (this.lastReconnectionSuccessful) { this.currentReconnectionDelay = 1; }
         // Exponentially increase the reconnection delay on failure
         else { this.currentReconnectionDelay *= 2; }
         
         const current: number = new Date().getTime();
-        if (current - this.lastReconnectionAttempt <= this.currentReconnectionDelay * 1000) {
-            this.getIdThenConnect();
+        if (current - this.lastReconnectionAttempt >= this.currentReconnectionDelay * 1000) {
             this.lastReconnectionAttempt = current;
-        } else { setTimeout(this.tryReconnect, this.currentReconnectionDelay); }
+            this.getIdThenConnect();
+        } else { 
+            console.log(`Next reconnection attempt in ${this.currentReconnectionDelay} seconds...`)
+            this.currentTimeout = setTimeout(this.tryReconnect, this.currentReconnectionDelay*1000+0.01);
+        }
     }
     
     /** @return The number of seconds that this socket must wait to try and reconnect */
@@ -77,4 +83,14 @@ export default abstract class WebsocketDatasource<T> {
      * @param msg The message received, of type T
      */
     protected abstract onMessageReceived(msg: T): void;
+    
+    /** Reset the reconnection delay to 1 sec and tries to reconnect immediately */
+    public resetReconnectionDelay(): void {
+        this.currentReconnectionDelay = 1;
+        // Cancels the current timeout if any
+        if (this.currentTimeout !== null) { clearTimeout(this.currentTimeout); }
+        
+        // Try to reconnect
+        this.tryReconnect();
+    }
 }
