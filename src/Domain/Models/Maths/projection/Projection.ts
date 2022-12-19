@@ -1,5 +1,6 @@
 ﻿import {Vector3D} from "../Vector3D";
 import {Ellipse} from "../Shapes/Ellipse";
+import {Axis3D} from "../Axis3D";
 
 export abstract class Projection {
 
@@ -63,7 +64,7 @@ export abstract class Projection {
             radiusX: radiusX,
             radiusY: radiusY,
             center: C,
-            rotation: 0
+            rotation: B.subtract(C).angleTo(Axis3D.X.unitVector)
         }
     }
 }

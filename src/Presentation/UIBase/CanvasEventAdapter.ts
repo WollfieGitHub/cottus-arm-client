@@ -1,6 +1,7 @@
 ﻿import {RefObject} from "react";
 import {Vector2D} from "../../Domain/Models/Maths/Vector2D";
 import {Vector3D} from "../../Domain/Models/Maths/Vector3D";
+import {FormatAlignLeft} from "@mui/icons-material";
 
 export type HandledEvent = ( 
     "mouseMove" 
@@ -8,13 +9,25 @@ export type HandledEvent = (
     | "scroll"
     | "mouseDown"
     | "mouseUp"
+    | "mouseScroll"
 );
 
 export type CanvasEventHandler = (a: any) => void;
+export interface CanvasClickHandler {
+    callback: (e: CanvasClickEvent) => void,
+    priority: number,
+}
+
+export class CanvasClickEvent { 
+    private _active: boolean = true;
+    get active(): boolean { return this._active; }
+
+    public consume(): void { this._active = false; }
+}
 
 export default class CanvasEventAdapter {
 
-    private canvas: HTMLCanvasElement;
+    private readonly canvas: HTMLCanvasElement;
     private lastMouseX: number = 0;
     private lastMouseY: number = 0;
     
@@ -29,6 +42,7 @@ export default class CanvasEventAdapter {
         this.canvas.addEventListener('click', this.handleMouseEvent);
         this.canvas.addEventListener('contextmenu', this.handleMouseEvent);
         this.canvas.addEventListener('mousemove', this.handleMouseEvent);
+        this.canvas.addEventListener('wheel', this.handleMouseScrollEvent);
     }
     
     private handleMouseEvent = (evt: any): void => {
@@ -37,10 +51,11 @@ export default class CanvasEventAdapter {
         if (evt.type === 'mousemove') { this.handleMouseMoveEvent(evt); }
         if (evt.type === 'mouseup') { this.handleMouseBtnEvent('mouseUp', evt); }
         if (evt.type === 'mousedown') { this.handleMouseBtnEvent('mouseDown', evt); }
-        if (evt.type === 'click') { this.handleMouseBtnEvent('mouseClick', evt); }
+        if (evt.type === 'click') { this.handleClickEvent(); }
     }
 
     private subscribers: Map<HandledEvent, Set<CanvasEventHandler>> = new Map();
+    private clickSubscribers: CanvasClickHandler[] = [];
 
     /**
      * Subscribe to a canvas event 
@@ -52,7 +67,35 @@ export default class CanvasEventAdapter {
         // @ts-ignore : Thinks the set can still be undefined
         this.subscribers.get(event).add(callback);
     }
-    
+
+    /**
+     * Subscribe to a click event on canvas
+     * @param handler The callback that handles a {@link CanvasClickHandler}, the priority of the handler
+     * is the priority with which the event is handled, handlers with
+     * priority of 0 is handled first
+     */
+    public subscribeClick(handler: CanvasClickHandler) {
+        this.clickSubscribers.push(handler);
+        this.clickSubscribers.sort((h1, h2) => h2.priority-h1.priority);
+    }
+
+    private handleClickEvent() {
+        const clickEvt: CanvasClickEvent = new CanvasClickEvent();
+        const handlers = [...this.clickSubscribers];
+        let handler;
+        while (clickEvt.active && handlers.length > 0) {
+            handler = handlers.pop();
+            // @ts-ignore
+            handler.callback(clickEvt);
+        }
+    }
+
+    private handleMouseScrollEvent = (evt: WheelEvent): void => {
+        this.dispatch("mouseScroll", {
+            deltaScroll: new Vector2D(evt.deltaX, evt.deltaY),
+        });
+    }
+
     private handleMouseMoveEvent = (evt: MouseEvent): void => {
         if (this.canvas === null) { return; }
         const ctx = this.canvas.getContext("2d");
@@ -64,8 +107,8 @@ export default class CanvasEventAdapter {
             evt.clientX - rect.left, evt.clientY - rect.top
         ));
         
-        this.deltaMouseX = x - this.deltaMouseX;
-        this.deltaMouseY = y - this.deltaMouseY;
+        this.deltaMouseX = evt.movementX;
+        this.deltaMouseY = evt.movementY;
         
         this.lastMouseX = x;
         this.lastMouseY = y;
@@ -79,7 +122,7 @@ export default class CanvasEventAdapter {
             deltaPos: new Vector2D(this.deltaMouseX, this.deltaMouseY),
         };
     }
-    
+
     private handleMouseBtnEvent(type: HandledEvent,  evt: MouseEvent) {
         this.dispatch(type, {
             button: evt.button,

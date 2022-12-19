@@ -1,15 +1,18 @@
-﻿import SFVector2DEquation from "../../Domain/Models/Maths/SFVector2DEquation";
+﻿import DistanceEquation from "../../Domain/Models/Maths/DistanceEquation";
 import {Joint} from "../../Domain/Models/Joint";
 import {Projection} from "../../Domain/Models/Maths/projection/Projection";
 import CanvasTool from "../UIBase/CanvasTool";
 
 export abstract class ControlTool implements CanvasTool{
 
+    protected static defaultWidth: number = 3.0;
+    protected static selectedWidth: number = 12.0;
+    
     /**
      * Returns the equation describing which position of mouse will
      * be able to select this tool, or undefined if the tool is not selectable
      */
-    public selectionEquation: SFVector2DEquation|undefined;
+    public selectionEquation: DistanceEquation|undefined;
     
     private _hovered: boolean = false;
     private _selected: boolean = false;

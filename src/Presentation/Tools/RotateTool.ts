@@ -6,7 +6,7 @@ import {Axis3D} from "../../Domain/Models/Maths/Axis3D";
 import Color from "../utils/Color";
 import {Vector3D} from "../../Domain/Models/Maths/Vector3D";
 import {ControlTool} from "./ControlTool";
-import SFVector2DEquation from "../../Domain/Models/Maths/SFVector2DEquation";
+import DistanceEquation from "../../Domain/Models/Maths/DistanceEquation";
 import {Ellipse} from "../../Domain/Models/Maths/Shapes/Ellipse";
 
 const rotateToolSize = 100;
@@ -22,7 +22,7 @@ export default class RotateTool extends ControlTool{
         this.axis = axis;
     }
 
-    selectionEquation: SFVector2DEquation | undefined;
+    selectionEquation: DistanceEquation | undefined;
 
     draw(
         ctx: CanvasRenderingContext2D,
@@ -35,7 +35,9 @@ export default class RotateTool extends ControlTool{
         }
         
         const drawAxis = (axis: Axis3D, centerPos: Vector3D) => {
-            withLineWidth(this.hovered||this.selected ? 6.0 : 3.0, ctx, () => {
+            withLineWidth(this.hovered||this.selected
+                ? ControlTool.selectedWidth
+                : ControlTool.defaultWidth, ctx, () => {
                 ctx.strokeStyle = axis.color.toRgbString();
 
                 const { v0, v1 } = axis.unitVector.planeFromNormal();
@@ -45,7 +47,7 @@ export default class RotateTool extends ControlTool{
                     centerPos.add(v0.normalized().scale(rotateToolSize)),
                     centerPos.add(v1.normalized().scale(rotateToolSize)),
                 );
-                this.selectionEquation = SFVector2DEquation.fromEllipse(ell);
+                this.selectionEquation = DistanceEquation.fromEllipse(ell);
                 
                 ctx.beginPath();
                 ctx.ellipse(ell.center.x, ell.center.y, ell.radiusX, ell.radiusY, ell.rotation, 0, 2*Math.PI);

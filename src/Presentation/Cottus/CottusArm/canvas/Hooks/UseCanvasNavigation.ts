@@ -1,4 +1,4 @@
-﻿import React, {useEffect, useState} from "react";
+﻿import {useEffect, useRef, useState} from "react";
 import {Vector3D} from "../../../../../Domain/Models/Maths/Vector3D";
 import {Projection, ProjectionType} from "../../../../../Domain/Models/Maths/projection/Projection";
 import {Axis3D} from "../../../../../Domain/Models/Maths/Axis3D";
@@ -8,15 +8,13 @@ import Canvas from "../../../../UIBase/Canvas";
 
 const createProjection = (
     rotX: number, rotZ: number, 
-    type: ProjectionType,
-    zoom: number = 1,
-    canvasWidth: number,
-    canvasHeight: number,
+    type: ProjectionType, zoom: number = 1,
+    canvasWidth: number, canvasHeight: number,
 ): Projection => {
-    
     const perspectiveRotVector: Vector3D = new Vector3D(rotX+2*Math.PI/3,0, rotZ-Math.PI/4);
     const rotVector: Vector3D = new Vector3D(-rotX,0, rotZ-Math.PI/4);
     const posVector: Vector3D = new Vector3D(0,750, 750);
+    
     switch (type) {
         case ProjectionType.Orthographic: {
             const orthographicZoomMultiplier: number = 1.5
@@ -45,10 +43,15 @@ const createProjection = (
 
 const useCanvasNavigation = (
     canvas: Canvas|undefined, 
-    canvasWidth: number, 
-    canvasHeight: number
+    canvasWidth: number, canvasHeight: number
 ) => {
-    const [ rightClick, setRightClick ] = useState(false);
+    // This is mandatory as the functions are only built for the current render
+    const [ rightClick, _setRightClick ] = useState(false);
+    const rightClickRef = useRef(rightClick);
+    const setRightClick = (rightClick: boolean): void => {
+        rightClickRef.current = rightClick;
+        _setRightClick(rightClick);
+    }
     
     const [ rotX, setRotX ] = useState(0);
     const [ rotZ, setRotZ ] = useState(0);
@@ -61,28 +64,30 @@ const useCanvasNavigation = (
     // Handle zoom navigation
     const handleScroll = (args: any) => {
         const { deltaScroll } = args;
-        const delta = deltaScroll.y*0.001;
-        setZoomLevel(Math.max(zoomLevel+delta, 0.01));
+        
+        setZoomLevel(zoomLevel => {
+            const delta = deltaScroll.y*0.0005;
+            return Math.max(zoomLevel+delta, 0.01)
+        });
     }
 
     // Handle rotation navigation
     const handleMouseBtn = (args: any) => {
         const { button, type, deltaPos } = args;
         
-        if (!rightClick && type === "mouseDown" && button === 2) { setRightClick(true); }
-        else if (rightClick && type === "mouseUp" && button === 2) { setRightClick(false); }
+        if (type === "mouseDown" && button === 2) { setRightClick(true); }
+        else if (type === "mouseUp" && button === 2) { setRightClick(false); }
         
-        if (rightClick) {
-            console.log(deltaPos)
-            setRotX(rotX-deltaPos.y*0.01);
-            setRotZ(rotZ+deltaPos.x*0.01);
+        if (rightClickRef.current) {
+            setRotX(rotX => rotX-deltaPos.y*0.005);
+            setRotZ(rotZ => rotZ+deltaPos.x*0.005);
         }
     }
 
     const canvasIsLoaded: boolean = canvas !== undefined;
     
     useEffect(() => {
-        canvas?.addListener('scroll', handleScroll);
+        canvas?.addListener('mouseScroll', handleScroll);
         canvas?.addListener('mouseDown', handleMouseBtn);
         canvas?.addListener('mouseUp', handleMouseBtn);
         canvas?.addListener('mouseMove', handleMouseBtn);

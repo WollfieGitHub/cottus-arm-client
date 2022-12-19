@@ -23,7 +23,6 @@ export default class CottusArmDatasourceAPIImpl
     constructor() { super("/api/arm-state-socket", true); }
     
     protected onMessageReceived(msg: CottusArmAPIEntity): void {
-        console.log(msg);
         this.arm = { joints: msg.joints.filter(j => !j.virtual).map(mapEntity), nbJoints: msg.nbJoints };
         // @ts-ignore : Complains that the arm can be undefined, which is not the case after the first assignment
         this.subscribers.forEach(subscriber => subscriber.onUpdate(this.arm));

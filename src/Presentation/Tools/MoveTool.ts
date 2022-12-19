@@ -6,7 +6,7 @@ import {Projection} from "../../Domain/Models/Maths/projection/Projection";
 import Color from "../utils/Color";
 import {withLineWidth} from "../utils/CanvasUtil";
 import {ControlTool} from "./ControlTool";
-import SFVector2DEquation from "../../Domain/Models/Maths/SFVector2DEquation";
+import DistanceEquation from "../../Domain/Models/Maths/DistanceEquation";
 
 
 export default class MoveTool extends ControlTool {
@@ -20,7 +20,7 @@ export default class MoveTool extends ControlTool {
         this.axis = axis;
     }
 
-    selectionEquation: SFVector2DEquation | undefined;
+    selectionEquation: DistanceEquation | undefined;
 
     draw(
         ctx: CanvasRenderingContext2D,
@@ -38,7 +38,7 @@ export default class MoveTool extends ControlTool {
             const [p0, p1] = projection.projectAll([
                 origin, origin.add(axis.unitVector.scale(this.size))
             ])
-            this.selectionEquation = SFVector2DEquation.fromSeg(p0, p1);
+            this.selectionEquation = DistanceEquation.fromSeg(p0, p1);
 
             ctx.beginPath();
             ctx.moveTo(p0.x, p0.y);
@@ -46,7 +46,9 @@ export default class MoveTool extends ControlTool {
             ctx.stroke();
         }
 
-        withLineWidth(this.hovered||this.selected ? 6.0 : 3.0, ctx, () => {
+        withLineWidth(this.hovered||this.selected
+                ? ControlTool.selectedWidth 
+                : ControlTool.defaultWidth, ctx, () => {
             drawAxis(this.axis, joint.globalPosition);
         })
 

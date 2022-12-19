@@ -125,5 +125,12 @@ export default class Color {
 
         return Color.fromHsl( h, Math.min(Math.max(sat, 0), 100), l, this.a )
     }
-    
+
+    /**
+     * Return a grey color with the specified level
+     * @param level The level of grey for the color
+     */
+    static greyFrom(level: number) {
+        return new Color(level, level, level);
+    }
 }

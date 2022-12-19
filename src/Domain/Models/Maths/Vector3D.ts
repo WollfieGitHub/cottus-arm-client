@@ -126,4 +126,8 @@ export class Vector3D {
         const v1 = v0.cross(this);
         return { v0, v1 };
     }
+    
+    scaleFrom(scalars: Vector3D): Vector3D {
+        return new Vector3D(this.x * scalars.x, this.y * scalars.y, this.z * scalars.z)
+    }
 }
