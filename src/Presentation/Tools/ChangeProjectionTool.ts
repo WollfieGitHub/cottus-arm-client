@@ -1,4 +1,4 @@
-﻿import {Projection, ProjectionType} from "../../Domain/Models/Maths/projection/Projection";
+﻿import {Projection, ProjectionType} from "../../Domain/Models/Maths/Projection/Projection";
 import CanvasTool from "../UIBase/CanvasTool";
 import {ClickableCanvasButton, OnClick} from "../UIBase/ClickableCanvasButton";
 import {Rect} from "../../Domain/Models/Maths/Shapes/Rect";

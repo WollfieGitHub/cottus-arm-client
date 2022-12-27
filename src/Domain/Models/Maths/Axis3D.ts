@@ -1,5 +1,5 @@
 ﻿import {Vector3D} from "./Vector3D";
-import Color from "../../../Presentation/utils/Color";
+import Color from "../../../Presentation/Utils/Color";
 
 export class Axis3D {
     

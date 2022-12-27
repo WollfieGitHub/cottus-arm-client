@@ -1,4 +1,4 @@
-﻿import {Projection} from "../../Domain/Models/Maths/projection/Projection";
+﻿import {Projection} from "../../Domain/Models/Maths/Projection/Projection";
 
 export default interface CanvasTool {
     

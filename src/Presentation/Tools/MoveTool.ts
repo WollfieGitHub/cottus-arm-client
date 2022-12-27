@@ -2,9 +2,8 @@
 import {Joint} from "../../Domain/Models/Joint";
 import {Vector3D} from "../../Domain/Models/Maths/Vector3D";
 import {Axis3D} from "../../Domain/Models/Maths/Axis3D";
-import {Projection} from "../../Domain/Models/Maths/projection/Projection";
-import Color from "../utils/Color";
-import {withLineWidth} from "../utils/CanvasUtil";
+import {Projection} from "../../Domain/Models/Maths/Projection/Projection";
+import {withLineWidth} from "../Utils/CanvasUtil";
 import {ControlTool} from "./ControlTool";
 import DistanceEquation from "../../Domain/Models/Maths/DistanceEquation";
 
@@ -27,10 +26,7 @@ export default class MoveTool extends ControlTool {
         projection: Projection,
         joint: Joint|undefined
     ) {
-        if (joint === undefined) { 
-            this.selectionEquation = undefined;
-            return; 
-        }
+        if (joint === undefined) { this.selectionEquation = undefined; return; }
 
         const drawAxis = (axis: Axis3D, origin: Vector3D) => {
             ctx.strokeStyle = axis.color.toRgbString();
@@ -51,6 +47,9 @@ export default class MoveTool extends ControlTool {
                 : ControlTool.defaultWidth, ctx, () => {
             drawAxis(this.axis, joint.globalPosition);
         })
+    }
 
+    protected onToolUpdate(arm: CottusArm): void {
+        arm.moveEndEffector(this.axis, this._currentMousePos.norm());
     }
 }

@@ -59,12 +59,11 @@ export abstract class Projection {
         // Norm of a and b, conjugate semi axes
         const radiusX = A.subtract(Q).norm();
         const radiusY = B.subtract(Q).norm();
+        const ellipseXRad = B.subtract(C);
         
         return { 
-            radiusX: radiusX,
-            radiusY: radiusY,
-            center: C,
-            rotation: B.subtract(C).angleTo(Axis3D.X.unitVector)
+            radiusX, radiusY, center: C,
+            rotation: Math.atan2(ellipseXRad.y, ellipseXRad.x)
         }
     }
 }

@@ -1,5 +1,5 @@
 ﻿import {RefObject, useEffect} from "react";
-import {ProjectionType} from "../../../../../Domain/Models/Maths/projection/Projection";
+import {ProjectionType} from "../../../../../Domain/Models/Maths/Projection/Projection";
 import ChangeProjectionTool from "../../../../Tools/ChangeProjectionTool";
 
 const changeProjectionTool: ChangeProjectionTool = new ChangeProjectionTool();

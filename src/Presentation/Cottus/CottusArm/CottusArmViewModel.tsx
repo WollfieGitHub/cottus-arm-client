@@ -7,10 +7,10 @@ import useCanvasNavigation from "./canvas/Hooks/UseCanvasNavigation";
 import useJointSelection from "./canvas/Hooks/UseJointSelection";
 import useControlTools from "./canvas/Hooks/UseControlTools";
 import Canvas from "../../UIBase/Canvas";
-import Color from "../../utils/Color";
+import Color from "../../Utils/Color";
 import {drawReferential} from "./canvas/Drawers/ReferentialDrawer";
 import {drawArm} from "./canvas/Drawers/JointDrawer";
-import {Projection} from "../../../Domain/Models/Maths/projection/Projection";
+import {Projection} from "../../../Domain/Models/Maths/Projection/Projection";
 import {Vector2D} from "../../../Domain/Models/Maths/Vector2D";
 
 const canvasWidth: number = 700;
@@ -29,15 +29,12 @@ export default function useCottusArmViewModel() {
 
     const projectionRef = useRef<Projection>();
     const { projection, setProjection } = useCanvasNavigation(canvas, canvasWidth, canvasHeight);
-    useEffect(() => {
-        projectionRef.current = projection;
-    }, [ projection ])
+    useEffect(() => { projectionRef.current = projection; }, [ projection ])
     
     const [ mousePos, setMousePos ] = useState(Vector2D.Zero);
     
     const { selectedJoint, hoveredJoint} = useJointSelection(canvas, cottusArmRef, projectionRef);
-    
-    const { draw: drawTools } = useControlTools(canvas);
+    const { draw: drawTools } = useControlTools(canvas, cottusArmRef);
     
     // Execute once, on component mount
     useEffect(() => {
@@ -52,7 +49,7 @@ export default function useCottusArmViewModel() {
         });
         const c = new Canvas(canvasRef.current);
         setCanvas(c)
-        c.addListener("mouseMove", ({ pos }) => setMousePos(pos))
+        c.addListener("canvasMove", ({ pos }) => setMousePos(pos))
     }, [])
 
     // Execute once every frame drawn on the canvas

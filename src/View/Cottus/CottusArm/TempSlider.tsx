@@ -15,8 +15,8 @@ export const TempSlider = ({
     
     return (<Slider 
         step={0.1}
-        min={0}
-        max={Math.PI*2}
+        min={-Math.PI}
+        max={Math.PI}
         onChange={handleSliderChange}
     ></Slider>);
 }

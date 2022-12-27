@@ -1,4 +1,4 @@
-﻿import CanvasEventAdapter, {CanvasClickHandler, CanvasEventHandler, HandledEvent} from "./CanvasEventAdapter";
+﻿import CanvasEventAdapter, {CanvasCallback, CanvasEventHandler, HandledEventMap} from "./CanvasEventAdapter";
 
 export default class Canvas {
     /** The actual canvas element */
@@ -23,12 +23,10 @@ export default class Canvas {
      * the handler will get called with parameters proper to the event
      * @param e The event to listen to
      * @param handler A handler for the event
+     * @param priority The priority with which this event handler will be invoked
      */
-    public addListener(e: HandledEvent, handler: CanvasEventHandler|CanvasClickHandler) {
-        if (e === "mouseClick") {
-            this.eventAdapter.subscribeClick(handler as CanvasClickHandler);
-            
-        } else { this.eventAdapter.subscribe(e, handler as CanvasEventHandler) }
+    public addListener<K extends keyof HandledEventMap>(e: K, handler: CanvasCallback<K>, priority?: number) {
+        this.eventAdapter.subscribe(e,{callback: handler, priority: priority || 100})
     }
     
     /** @return The canvas rendering context */

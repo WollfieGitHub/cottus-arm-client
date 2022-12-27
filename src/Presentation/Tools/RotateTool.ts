@@ -1,9 +1,9 @@
 ﻿import {Joint} from "../../Domain/Models/Joint";
 import {CottusArm} from "../../Domain/Models/CottusArm";
-import {Projection} from "../../Domain/Models/Maths/projection/Projection";
-import {withLineWidth} from "../utils/CanvasUtil";
+import {Projection} from "../../Domain/Models/Maths/Projection/Projection";
+import {withLineWidth} from "../Utils/CanvasUtil";
 import {Axis3D} from "../../Domain/Models/Maths/Axis3D";
-import Color from "../utils/Color";
+import Color from "../Utils/Color";
 import {Vector3D} from "../../Domain/Models/Maths/Vector3D";
 import {ControlTool} from "./ControlTool";
 import DistanceEquation from "../../Domain/Models/Maths/DistanceEquation";
@@ -56,5 +56,9 @@ export default class RotateTool extends ControlTool{
         }
 
         drawAxis(this.axis, joint.globalPosition);
+    }
+    
+    protected onToolUpdate(arm: CottusArm): void {
+        
     }
 }

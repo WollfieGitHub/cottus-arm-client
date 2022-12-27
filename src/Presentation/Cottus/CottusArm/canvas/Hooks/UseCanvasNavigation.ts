@@ -1,10 +1,11 @@
 ﻿import {useEffect, useRef, useState} from "react";
 import {Vector3D} from "../../../../../Domain/Models/Maths/Vector3D";
-import {Projection, ProjectionType} from "../../../../../Domain/Models/Maths/projection/Projection";
+import {Projection, ProjectionType} from "../../../../../Domain/Models/Maths/Projection/Projection";
 import {Axis3D} from "../../../../../Domain/Models/Maths/Axis3D";
-import {OrthographicProjection} from "../../../../../Domain/Models/Maths/projection/OrthographicProjection";
-import PerspectiveProjection from "../../../../../Domain/Models/Maths/projection/PerspectiveProjection";
+import {OrthographicProjection} from "../../../../../Domain/Models/Maths/Projection/OrthographicProjection";
+import PerspectiveProjection from "../../../../../Domain/Models/Maths/Projection/PerspectiveProjection";
 import Canvas from "../../../../UIBase/Canvas";
+import {CanvasButtonEvent, CanvasMoveEvent} from "../../../../UIBase/CanvasEvent";
 
 const createProjection = (
     rotX: number, rotZ: number, 
@@ -42,7 +43,7 @@ const createProjection = (
 }
 
 const useCanvasNavigation = (
-    canvas: Canvas|undefined, 
+    canvas: Canvas | undefined, 
     canvasWidth: number, canvasHeight: number
 ) => {
     // This is mandatory as the functions are only built for the current render
@@ -72,11 +73,15 @@ const useCanvasNavigation = (
     }
 
     // Handle rotation navigation
-    const handleMouseBtn = (args: any) => {
-        const { button, type, deltaPos } = args;
+    const handleMouseBtn = (evt: CanvasButtonEvent) => {
+        const { button, btnDown } = evt;
         
-        if (type === "mouseDown" && button === 2) { setRightClick(true); }
-        else if (type === "mouseUp" && button === 2) { setRightClick(false); }
+        if (btnDown && button === 2) { setRightClick(true); }
+        else if (!btnDown && button === 2) { setRightClick(false); }
+    }
+    
+    const handleMouseMove = (evt: CanvasMoveEvent) => {
+        const { deltaPos } = evt;
         
         if (rightClickRef.current) {
             setRotX(rotX => rotX-deltaPos.y*0.005);
@@ -87,10 +92,9 @@ const useCanvasNavigation = (
     const canvasIsLoaded: boolean = canvas !== undefined;
     
     useEffect(() => {
-        canvas?.addListener('mouseScroll', handleScroll);
-        canvas?.addListener('mouseDown', handleMouseBtn);
-        canvas?.addListener('mouseUp', handleMouseBtn);
-        canvas?.addListener('mouseMove', handleMouseBtn);
+        canvas?.addListener('scroll', handleScroll);
+        canvas?.addListener('canvasButton', handleMouseBtn);
+        canvas?.addListener('canvasMove', handleMouseMove);
     }, [ canvasIsLoaded ])
 
     // Recompute the projection each time the rotX or rotZ changes

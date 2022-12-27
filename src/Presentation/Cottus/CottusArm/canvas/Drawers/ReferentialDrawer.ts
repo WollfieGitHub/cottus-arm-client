@@ -1,8 +1,8 @@
-﻿import {OrthographicProjection} from "../../../../../Domain/Models/Maths/projection/OrthographicProjection";
+﻿import {OrthographicProjection} from "../../../../../Domain/Models/Maths/Projection/OrthographicProjection";
 import {Vector3D} from "../../../../../Domain/Models/Maths/Vector3D";
 import {Axis3D} from "../../../../../Domain/Models/Maths/Axis3D";
-import Color from "../../../../utils/Color";
-import {Projection} from "../../../../../Domain/Models/Maths/projection/Projection";
+import Color from "../../../../Utils/Color";
+import {Projection} from "../../../../../Domain/Models/Maths/Projection/Projection";
 
 const xGridSpacing: number = 100.0;
 const yGridSpacing: number = 100.0;

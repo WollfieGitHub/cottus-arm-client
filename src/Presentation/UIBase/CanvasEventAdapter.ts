@@ -2,27 +2,26 @@
 import {Vector2D} from "../../Domain/Models/Maths/Vector2D";
 import {Vector3D} from "../../Domain/Models/Maths/Vector3D";
 import {FormatAlignLeft} from "@mui/icons-material";
+import {
+    CanvasButtonEvent,
+    CanvasClickEvent,
+    CanvasEvent,
+    CanvasMouseEvent,
+    CanvasMoveEvent,
+    CanvasWheelEvent, MouseButton
+} from "./CanvasEvent";
 
-export type HandledEvent = ( 
-    "mouseMove" 
-    | "mouseClick"
-    | "scroll"
-    | "mouseDown"
-    | "mouseUp"
-    | "mouseScroll"
-);
-
-export type CanvasEventHandler = (a: any) => void;
-export interface CanvasClickHandler {
-    callback: (e: CanvasClickEvent) => void,
-    priority: number,
+export interface HandledEventMap {
+    "canvasMove": CanvasMoveEvent,
+    "canvasClick": CanvasClickEvent,
+    "scroll": CanvasWheelEvent,
+    "canvasButton": CanvasButtonEvent,
 }
 
-export class CanvasClickEvent { 
-    private _active: boolean = true;
-    get active(): boolean { return this._active; }
-
-    public consume(): void { this._active = false; }
+export type CanvasCallback<T extends keyof HandledEventMap> = (e: HandledEventMap[T]) => void;
+export interface CanvasEventHandler<T extends keyof HandledEventMap> {
+    callback: CanvasCallback<T>,
+    priority?: number,
 }
 
 export default class CanvasEventAdapter {
@@ -49,51 +48,39 @@ export default class CanvasEventAdapter {
         // Forbid the propagation of the event if it was on the canvas
         evt.preventDefault();
         if (evt.type === 'mousemove') { this.handleMouseMoveEvent(evt); }
-        if (evt.type === 'mouseup') { this.handleMouseBtnEvent('mouseUp', evt); }
-        if (evt.type === 'mousedown') { this.handleMouseBtnEvent('mouseDown', evt); }
+        if (evt.type === 'mouseup' || evt.type === 'mousedown') { this.handleMouseBtnEvent(evt); }
         if (evt.type === 'click') { this.handleClickEvent(); }
     }
 
-    private subscribers: Map<HandledEvent, Set<CanvasEventHandler>> = new Map();
-    private clickSubscribers: CanvasClickHandler[] = [];
+    private subscribers: Map<keyof HandledEventMap, CanvasEventHandler<any>[]> = new Map();
 
     /**
      * Subscribe to a canvas event 
      * @param event An event handled by the canvas
-     * @param callback A callback when the event occurs
-     */
-    public subscribe(event: HandledEvent, callback: CanvasEventHandler) {
-        if (!this.subscribers.has(event)) { this.subscribers.set(event, new Set()); }
-        // @ts-ignore : Thinks the set can still be undefined
-        this.subscribers.get(event).add(callback);
-    }
-
-    /**
-     * Subscribe to a click event on canvas
-     * @param handler The callback that handles a {@link CanvasClickHandler}, the priority of the handler
+     * @param handler The callback that handles a {@link CanvasEventHandler}, the priority of the handler
      * is the priority with which the event is handled, handlers with
      * priority of 0 is handled first
      */
-    public subscribeClick(handler: CanvasClickHandler) {
-        this.clickSubscribers.push(handler);
-        this.clickSubscribers.sort((h1, h2) => h2.priority-h1.priority);
+    public subscribe<K extends keyof HandledEventMap>(event: K, handler: CanvasEventHandler<K>) {
+        if (!this.subscribers.has(event)) { this.subscribers.set(event, []); }
+        // @ts-ignore : Thinks the set can still be undefined
+        this.subscribers.get(event).push(handler);
+        this.subscribers.set(
+            // @ts-ignore
+            event, this.subscribers.get(event)
+                .map(({priority, callback}) => { return {priority: (priority === undefined ? 100 : priority), callback} })
+                .sort((h1, h2) => h2.priority-h1.priority)
+        )
     }
 
     private handleClickEvent() {
-        const clickEvt: CanvasClickEvent = new CanvasClickEvent();
-        const handlers = [...this.clickSubscribers];
-        let handler;
-        while (clickEvt.active && handlers.length > 0) {
-            handler = handlers.pop();
-            // @ts-ignore
-            handler.callback(clickEvt);
-        }
+        const { pos, deltaPos } = this.getMouseState();
+        const clickEvt: CanvasClickEvent = new CanvasClickEvent(pos, deltaPos);
+        this.dispatch('canvasClick', clickEvt);
     }
 
     private handleMouseScrollEvent = (evt: WheelEvent): void => {
-        this.dispatch("mouseScroll", {
-            deltaScroll: new Vector2D(evt.deltaX, evt.deltaY),
-        });
+        this.dispatch('scroll', new CanvasWheelEvent(new Vector2D(evt.deltaX, evt.deltaY)));
     }
 
     private handleMouseMoveEvent = (evt: MouseEvent): void => {
@@ -113,7 +100,10 @@ export default class CanvasEventAdapter {
         this.lastMouseX = x;
         this.lastMouseY = y;
 
-        this.dispatch('mouseMove', {});
+        this.dispatch('canvasMove', new CanvasMoveEvent(
+            new Vector2D(this.lastMouseX, this.lastMouseY),
+            new Vector2D(this.deltaMouseX, this.deltaMouseY)
+        ));
     }
 
     private getMouseState(): any {
@@ -123,20 +113,21 @@ export default class CanvasEventAdapter {
         };
     }
 
-    private handleMouseBtnEvent(type: HandledEvent,  evt: MouseEvent) {
-        this.dispatch(type, {
-            button: evt.button,
-        });
+    private handleMouseBtnEvent(evt: MouseEvent) {
+        const { pos, deltaPos } = this.getMouseState();
+        this.dispatch('canvasButton', new CanvasButtonEvent(
+            pos, deltaPos, evt.button as MouseButton, evt.type === 'mousedown'
+        ));
     }
 
     /** Dispatch the event to all subscribers */
-    private dispatch(event: HandledEvent, args: any): void {
-        if (!this.subscribers.has(event)) { this.subscribers.set(event, new Set()); }
+    private dispatch<K extends keyof HandledEventMap>(eventType: K, event: HandledEventMap[K]): void {
+        if (!this.subscribers.has(eventType)) { this.subscribers.set(eventType, []); }
         // @ts-ignore : Thinks the set can still be undefined
-        this.subscribers.get(event).forEach(callback => callback({
-            ...args,
-            ...this.getMouseState(),
-            type: event
-        }));
+        const handlers = [...this.subscribers.get(eventType)];
+        let handler: CanvasEventHandler<K>;
+        while (event.active && (handler = handlers.pop()) !== undefined) {
+            handler.callback(event);
+        }
     }
 }
