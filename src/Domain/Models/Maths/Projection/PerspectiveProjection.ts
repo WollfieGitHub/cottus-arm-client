@@ -37,7 +37,7 @@ export default class PerspectiveProjection extends Projection {
         
         // The point in the camera space
         // Y rotation is not useful here
-        const camSpaceP = worldSpaceP.subtract(this.cameraPos)
+        const camSpaceP = worldSpaceP.minus(this.cameraPos)
             .rotatedAtOriginAround(2, -this.cameraRot.z)
             .rotatedAtOriginAround(0, -this.cameraRot.x)
         

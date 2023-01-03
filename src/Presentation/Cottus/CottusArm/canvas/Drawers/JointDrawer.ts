@@ -24,8 +24,8 @@ export function drawArm(
             withOpacity(0.5, ctx, () => {
                 drawJoint(
                     ctx, joint.name,
-                    joint.globalPosition.scaleFrom(new Vector3D(1, 1, 0)),
-                    (joint.parent?.globalPosition || Vector3D.Zero).scaleFrom(new Vector3D(1, 1, 0)),
+                    joint.transform.origin.scaleFrom(new Vector3D(1, 1, 0)),
+                    (joint.parent?.transform.origin || Vector3D.Zero).scaleFrom(new Vector3D(1, 1, 0)),
                     Color.greyFrom(50),
                     arm.nbJoints, base, hovered, selected);
             });
@@ -34,7 +34,8 @@ export function drawArm(
             withOpacity(1.0, ctx, () => {
                 drawJoint(
                     ctx, joint.name, 
-                    joint.globalPosition, joint.parent?.globalPosition || Vector3D.Zero,
+                    joint.transform.origin,
+                    joint.parent?.transform.origin || Vector3D.Zero,
                     getColorOf(joint, arm.nbJoints),
                     arm.nbJoints, base, hovered, selected);
             });

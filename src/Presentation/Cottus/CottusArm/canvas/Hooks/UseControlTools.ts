@@ -78,6 +78,7 @@ const useControlTools = (
         // Hover the closest candidate or none if none is hoverable
         if (candidates.length === 0) { hover(undefined); }
         else { hover(candidates[0].tool); }
+        
     }
     
     // Draw all the tools

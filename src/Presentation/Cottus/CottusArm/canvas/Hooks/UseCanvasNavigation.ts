@@ -20,9 +20,9 @@ const createProjection = (
         case ProjectionType.Orthographic: {
             const orthographicZoomMultiplier: number = 1.5
             // Because we look at center of referential :
-            const dirVector: Vector3D = Vector3D.Zero.subtract(posVector);
+            const dirVector: Vector3D = Vector3D.Zero.minus(posVector);
             const zUnit: Vector3D = Axis3D.Z.unitVector;
-            const upVector: Vector3D = zUnit.subtract(dirVector.scale(zUnit.projectedOnto(dirVector)));
+            const upVector: Vector3D = zUnit.minus(dirVector.scale(zUnit.projectedOnto(dirVector)));
             const rightVector: Vector3D = dirVector.cross(upVector).scale(-1);
 
             return new OrthographicProjection(

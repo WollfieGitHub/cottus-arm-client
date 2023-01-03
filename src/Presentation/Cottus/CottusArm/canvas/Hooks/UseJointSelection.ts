@@ -35,7 +35,7 @@ const useJointSelection = (
 
         // Sort all joints with their distance to clicked location
         const joints = arm.joints.map(joint => {
-            return { proj: projection.project(joint.globalPosition), name: joint.name };
+            return { proj: projection.project(joint.transform.origin), name: joint.name };
         }).sort((a, b) => {
             return distance(a.proj, new Vector2D(x, y)) - distance(b.proj, new Vector2D(x, y));
         });

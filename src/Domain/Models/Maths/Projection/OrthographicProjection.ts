@@ -45,7 +45,7 @@ export class OrthographicProjection extends Projection{
      * @param normal The normal of the plan
      */
     public projectOnPlan(v: Vector3D, normal: Vector3D):Vector3D {
-        return v.subtract(normal.scale(
+        return v.minus(normal.scale(
             v.projectedOnto(normal)
         ));
     }

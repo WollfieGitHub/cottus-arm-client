@@ -12,6 +12,7 @@ import {drawReferential} from "./canvas/Drawers/ReferentialDrawer";
 import {drawArm} from "./canvas/Drawers/JointDrawer";
 import {Projection} from "../../../Domain/Models/Maths/Projection/Projection";
 import {Vector2D} from "../../../Domain/Models/Maths/Vector2D";
+import drawEndEffector from "./canvas/Drawers/EndEffectorDrawer";
 
 const canvasWidth: number = 700;
 const canvasHeight: number = 700;
@@ -76,6 +77,8 @@ export default function useCottusArmViewModel() {
 
             // If the arm data isn't available, don't draw it
             drawArm(ctx, cottusArm, projection, hoveredJoint, selectedJoint);
+            
+            drawEndEffector(ctx, projection, cottusArm?.endEffector);
 
             // Draw the tools
             drawTools(ctx, projection, cottusArm?.joints.filter(j => j.name === selectedJoint)[0])

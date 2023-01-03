@@ -1,6 +1,7 @@
 ﻿import {Vector3D} from "../Vector3D";
 import {Ellipse} from "../Shapes/Ellipse";
 import {Axis3D} from "../Axis3D";
+import {Vector2D} from "../Vector2D";
 
 export abstract class Projection {
 
@@ -11,7 +12,7 @@ export abstract class Projection {
      * @return Vector3D A vector with coordinates x and y in the interval [-1, 1] 
      * @return undefined If the vector is not visible in the viewport. it shouldn't be drawn
      */
-    abstract project(worldSpace: Vector3D): Vector3D;
+    abstract project(worldSpace: Vector3D): Vector2D;
 
     /**
      * Project all given vectors in the {@code worldSpace} array and only
@@ -43,23 +44,23 @@ export abstract class Projection {
         // from the conjugate diameters : 
         const PtoP1 = -Math.PI/2.0 * Math.sign(P.angleTo(Q));
         // Put P at origin
-        const P0 = P.subtract(C);
+        const P0 = P.minus(C);
         // Rotate point 90deg and undo translation
         const P1 = new Vector3D(
             P0.x * Math.cos(PtoP1) - P0.y*Math.sin(PtoP1),
             P0.y * Math.cos(PtoP1) + P0.x*Math.sin(PtoP1),
-            0).add(C);
+            0).plus(C);
         // Construct center of P' and D
-        const D = Q.add(P1).scale(0.5);
+        const D = Q.plus(P1).scale(0.5);
         // Construct circle from D to C
-        const cd = D.subtract(C).norm();
+        const cd = D.minus(C).norm();
         // Get both ends of the semicircle
-        const B = Q.subtract(D).normalized().scale(cd).add(D);
-        const A = D.subtract(Q).normalized().scale(cd).add(D);
+        const B = Q.minus(D).normalized().scale(cd).plus(D);
+        const A = D.minus(Q).normalized().scale(cd).plus(D);
         // Norm of a and b, conjugate semi axes
-        const radiusX = A.subtract(Q).norm();
-        const radiusY = B.subtract(Q).norm();
-        const ellipseXRad = B.subtract(C);
+        const radiusX = A.minus(Q).norm();
+        const radiusY = B.minus(Q).norm();
+        const ellipseXRad = B.minus(C);
         
         return { 
             radiusX, radiusY, center: C,

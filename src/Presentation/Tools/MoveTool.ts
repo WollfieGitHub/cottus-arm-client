@@ -5,7 +5,7 @@ import {Axis3D} from "../../Domain/Models/Maths/Axis3D";
 import {Projection} from "../../Domain/Models/Maths/Projection/Projection";
 import {withLineWidth} from "../Utils/CanvasUtil";
 import {ControlTool} from "./ControlTool";
-import DistanceEquation from "../../Domain/Models/Maths/DistanceEquation";
+import ProjectionEquation from "../../Domain/Models/Maths/ProjectionEquation";
 
 
 export default class MoveTool extends ControlTool {
@@ -19,7 +19,7 @@ export default class MoveTool extends ControlTool {
         this.axis = axis;
     }
 
-    selectionEquation: DistanceEquation | undefined;
+    selectionEquation: ProjectionEquation | undefined;
 
     draw(
         ctx: CanvasRenderingContext2D,
@@ -27,14 +27,15 @@ export default class MoveTool extends ControlTool {
         joint: Joint|undefined
     ) {
         if (joint === undefined) { this.selectionEquation = undefined; return; }
+        // if (!joint.isEndEffector) { this.selectionEquation = undefined; return; }
 
-        const drawAxis = (axis: Axis3D, origin: Vector3D) => {
-            ctx.strokeStyle = axis.color.toRgbString();
+        const drawAxis = (direction: Vector3D, origin: Vector3D) => {
+            ctx.strokeStyle = this.axis.color.toRgbString();
 
             const [p0, p1] = projection.projectAll([
-                origin, origin.add(axis.unitVector.scale(this.size))
+                origin, origin.plus(direction.scale(this.size))
             ])
-            this.selectionEquation = DistanceEquation.fromSeg(p0, p1);
+            this.selectionEquation = ProjectionEquation.fromSeg(p0, p1);
 
             ctx.beginPath();
             ctx.moveTo(p0.x, p0.y);
@@ -42,14 +43,21 @@ export default class MoveTool extends ControlTool {
             ctx.stroke();
         }
 
+        let direction: Vector3D = Vector3D.Zero;
+        switch (this.axis.id) {
+            case 0: { direction = joint.transform.localX; break; }
+            case 1: { direction = joint.transform.localY; break; }
+            case 2: { direction = joint.transform.localZ; break; }
+        }
+        
         withLineWidth(this.hovered||this.selected
                 ? ControlTool.selectedWidth 
                 : ControlTool.defaultWidth, ctx, () => {
-            drawAxis(this.axis, joint.globalPosition);
+            drawAxis(direction, joint.transform.origin);
         })
     }
 
     protected onToolUpdate(arm: CottusArm): void {
-        arm.moveEndEffector(this.axis, this._currentMousePos.norm());
+        arm.moveEndEffector(this.axis, this._deltaParam);
     }
 }

@@ -16,7 +16,7 @@ export class Vector3D {
         this.z = z;
     }
     
-    public add(that: Vector3D): Vector3D {
+    public plus(that: Vector3D): Vector3D {
         return new Vector3D(
             this.x + that.x,
             this.y + that.y,
@@ -26,7 +26,7 @@ export class Vector3D {
 
     public scale(scalar: number): Vector3D { return new Vector3D(this.x * scalar, this.y * scalar, this.z * scalar); }
 
-    public subtract(that: Vector3D): Vector3D { return this.add(that.scale(-1)); }
+    public minus(that: Vector3D): Vector3D { return this.plus(that.scale(-1)); }
 
     public dot(that: Vector3D): number {
         return this.x*that.x + this.y*that.y + this.z*that.z;
@@ -81,11 +81,11 @@ export class Vector3D {
     }
 
     rotatedAtPointUsing(eulerAngles: Vector3D, point: Vector3D): Vector3D {
-        return this.subtract(point)
+        return this.minus(point)
             .rotatedAtOriginAround(0, eulerAngles.x)
             .rotatedAtOriginAround(1, eulerAngles.y)
             .rotatedAtOriginAround(2, eulerAngles.z)
-            .add(point);
+            .plus(point);
     }
     
     rotatedAtOriginUsing(eulerAngles: Vector3D): Vector3D {
@@ -129,5 +129,14 @@ export class Vector3D {
     
     scaleFrom(scalars: Vector3D): Vector3D {
         return new Vector3D(this.x * scalars.x, this.y * scalars.y, this.z * scalars.z)
+    }
+    
+    withCoordinate(axis: number, value: number) {
+        switch (axis) {
+            case 0 : { return new Vector3D(value, this.y, this.z); }
+            case 1 : { return new Vector3D(this.x, value, this.z); }
+            case 2 : { return new Vector3D(this.x, this.y, value); }
+        }
+        return this;
     }
 }

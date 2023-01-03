@@ -29,9 +29,9 @@ function drawReferentialGrid(
     for (let x = 1; x < xReferentialRange/xGridSpacing; x++) {
         [ gridLineBegin, gridLineEnd ] = base.projectAll([
             new Vector3D(+yReferentialRange/2.0, 0, 0)
-                .add(new Vector3D(0, xGridSpacing*x - xReferentialRange/2.0, 0)),
+                .plus(new Vector3D(0, xGridSpacing*x - xReferentialRange/2.0, 0)),
             new Vector3D(-yReferentialRange/2.0, 0, 0)
-                .add(new Vector3D(0, xGridSpacing*x -xReferentialRange/2.0, 0))
+                .plus(new Vector3D(0, xGridSpacing*x -xReferentialRange/2.0, 0))
         ]);
 
         ctx.beginPath();
@@ -43,9 +43,9 @@ function drawReferentialGrid(
     for (let y = 1; y < yReferentialRange/yGridSpacing; y++) {
         [ gridLineBegin, gridLineEnd ] = base.projectAll([
             new Vector3D(0, +xReferentialRange/2.0, 0)
-                .add(new Vector3D(xGridSpacing*y-xReferentialRange/2.0, 0, 0)),
+                .plus(new Vector3D(xGridSpacing*y-xReferentialRange/2.0, 0, 0)),
             new Vector3D(0, -xReferentialRange/2.0, 0)
-                .add(new Vector3D(xGridSpacing*y-xReferentialRange/2.0, 0, 0))
+                .plus(new Vector3D(xGridSpacing*y-xReferentialRange/2.0, 0, 0))
         ]);
         
         ctx.beginPath();

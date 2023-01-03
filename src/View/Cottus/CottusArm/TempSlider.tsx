@@ -7,7 +7,7 @@ export const TempSlider = ({
     const handleSliderChange = (event: Event, val: number | number[], activeThumb: number) => {
         if (Array.isArray(val)) { return; }
 
-        fetch(`/api/arm-controller/angle?n=${jointIndex}`, {
+        fetch(`/api/arm-controller/angle?joint=${jointIndex}`, {
             method: "POST",
             body: val as any
         }).then();

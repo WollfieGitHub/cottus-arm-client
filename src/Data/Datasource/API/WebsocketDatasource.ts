@@ -71,7 +71,7 @@ export default abstract class WebsocketDatasource<T> {
             this.getIdThenConnect();
         } else { 
             console.log(`Next reconnection attempt in ${this.currentReconnectionDelay} seconds...`)
-            this.currentTimeout = setTimeout(this.tryReconnect, this.currentReconnectionDelay*1000+0.01);
+            this.currentTimeout = setTimeout(this.tryReconnect, this.currentReconnectionDelay*1000+1);
         }
     }
     

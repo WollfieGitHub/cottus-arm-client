@@ -1,8 +1,13 @@
 ﻿
 export default class Color {
+    public static readonly Black: Color = new Color(0, 0, 0);
     public static readonly Red: Color = new Color(255, 0, 0);
+    public static readonly Yellow: Color = new Color(255, 255, 0);
     public static readonly Green: Color = new Color(0, 255, 0);
+    public static readonly Cyan: Color = new Color(0, 255, 255);
     public static readonly Blue: Color = new Color(0, 0, 255);
+    public static readonly Magenta: Color = new Color(255, 0, 255);
+    public static readonly White: Color = new Color(255, 255, 255);
     
     /** The color will shift by 20% lightness by default */
     private static readonly ColorShiftFactor = 0.05*100;

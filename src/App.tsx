@@ -22,7 +22,6 @@ function App() {
                     fontFamily={"comic-sans"}
                     color={"white"}
                 >
-                    Cottus Arm Controller
                 </Typography>
             </div>
             <CottusArmView />   

@@ -15,7 +15,7 @@ export class Rect {
      * @param point The point in 2d Space
      */
     contains(point: Vector2D): boolean {
-        const { x, y } =  point.subtract(this.pos);
+        const { x, y } =  point.minus(this.pos);
         return x >= 0 && x <= this.dim.x 
             && y >= 0 && y <= this.dim.y
     }
