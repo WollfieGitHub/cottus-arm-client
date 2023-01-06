@@ -4,7 +4,7 @@ import React, {MutableRefObject, RefObject, useEffect, useRef, useState} from "r
 import {X509Certificate} from "crypto";
 import Canvas from "../../../../UIBase/Canvas";
 import {Vector2D} from "../../../../../Domain/Models/Maths/Vector2D";
-import {CanvasMoveEvent} from "../../../../UIBase/CanvasEvent";
+import {CanvasButtonEvent, CanvasMoveEvent} from "../../../../UIBase/CanvasEvent";
 
 const selectionRadius: number = 0.01;
 
@@ -49,15 +49,15 @@ const useJointSelection = (
         else { setHoveredJoint(undefined); }
     }
     
-    const onCanvasClick = () => {
-        if (hoveredJointRef.current !== undefined) { setSelectedJoint(hoveredJointRef.current); }
+    const onCanvasClick = (evt: CanvasButtonEvent) => {
+        if (hoveredJointRef.current !== undefined && evt.button !== 2 && evt.btnDown) { setSelectedJoint(hoveredJointRef.current); }
         // Wants to deselect, so clicked on no joint
-        else { setSelectedJoint(undefined); }
+        else if (evt.button !== 2 && evt.btnDown) { setSelectedJoint(undefined); }
     }
     
     useEffect(() => {
         canvas?.addListener("canvasMove", onCanvasMove);
-        canvas?.addListener("canvasClick", onCanvasClick);
+        canvas?.addListener("canvasButton", onCanvasClick);
         
     }, [ canvasIsLoaded ])
     

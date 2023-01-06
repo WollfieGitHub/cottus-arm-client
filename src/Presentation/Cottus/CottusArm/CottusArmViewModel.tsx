@@ -19,23 +19,30 @@ const canvasHeight: number = 700;
 
 const UseCase = new CottusArmUseCase( new CottusArmRepositoryImpl(new CottusArmDatasourceAPIImpl()) );
 
+let prev = Date.now();
+
 export default function useCottusArmViewModel() {
     
     // Update the arm's state
     const cottusArmRef = useRef<CottusArm>();
     const [ cottusArm, setCottusArm ] = useState<CottusArm>();
     
+    const dtRef = useRef<number>(0);
+    
     const [ canvas, setCanvas ] = useState<Canvas>();
     const canvasRef = useRef<HTMLCanvasElement>(null);
 
     const projectionRef = useRef<Projection>();
-    const { projection, setProjection } = useCanvasNavigation(canvas, canvasWidth, canvasHeight);
+    const { projection } = useCanvasNavigation(canvas, canvasWidth, canvasHeight, dtRef);
     useEffect(() => { projectionRef.current = projection; }, [ projection ])
-    
-    const [ mousePos, setMousePos ] = useState(Vector2D.Zero);
     
     const { selectedJoint, hoveredJoint} = useJointSelection(canvas, cottusArmRef, projectionRef);
     const { draw: drawTools } = useControlTools(canvas, cottusArmRef);
+
+    // On each redraw, update dt
+    const curr = Date.now();
+    dtRef.current = (curr - prev) / 1000;
+    prev = curr;
     
     // Execute once, on component mount
     useEffect(() => {
@@ -50,8 +57,29 @@ export default function useCottusArmViewModel() {
         });
         const c = new Canvas(canvasRef.current);
         setCanvas(c)
-        c.addListener("canvasMove", ({ pos }) => setMousePos(pos))
     }, [])
+
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const draw = (ctx: CanvasRenderingContext2D) => {
+
+        // Redraw
+        ctx.fillStyle = new Color(80, 80, 80).toRgbString();
+        ctx.fillRect(-1, -1, 2, 2);
+
+        if (projection === undefined) { return; }
+        ctx.lineWidth = 1/Math.max(canvasWidth, canvasHeight);
+
+        // Draw the referential for the world space
+        drawReferential(ctx, projection);
+
+        // If the arm data isn't available, don't draw it
+        drawArm(ctx, cottusArm, projection, hoveredJoint, selectedJoint);
+
+        drawEndEffector(ctx, projection, cottusArm?.endEffector);
+
+        // Draw the tools
+        drawTools(ctx, projection, cottusArm?.joints.filter(j => j.name === selectedJoint)[0])
+    }
 
     // Execute once every frame drawn on the canvas
     useEffect(() => {
@@ -64,28 +92,16 @@ export default function useCottusArmViewModel() {
             0, canvasHeight/2,
             canvasWidth/2, canvasHeight/2);
 
-        const redraw = (ctx: CanvasRenderingContext2D) => {
-            
-            ctx.fillStyle = new Color(80, 80, 80).toRgbString();
-            ctx.fillRect(-1, -1, 2, 2);
-
-            if (projection === undefined) { return; }
-            ctx.lineWidth = 1/Math.max(canvasWidth, canvasHeight);
-
-            // Draw the referential for the world space
-            drawReferential(ctx, projection);
-
-            // If the arm data isn't available, don't draw it
-            drawArm(ctx, cottusArm, projection, hoveredJoint, selectedJoint);
-            
-            drawEndEffector(ctx, projection, cottusArm?.endEffector);
-
-            // Draw the tools
-            drawTools(ctx, projection, cottusArm?.joints.filter(j => j.name === selectedJoint)[0])
+        let animationFrameId: number;
+        
+        const render = () => {
+            draw(context);
+            animationFrameId = window.requestAnimationFrame(render);
         }
-
-        redraw(context);
-    }, [cottusArm, canvas, mousePos, canvasRef, cottusArmRef, drawTools, hoveredJoint, projection, selectedJoint]);
+        render();
+        
+        return () => { window.cancelAnimationFrame(animationFrameId); }
+    }, [canvas, draw]);
     
     return { cottusArm, canvasWidth, canvasHeight, canvasRef };
 }

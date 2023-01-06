@@ -31,13 +31,14 @@ const ToolSelectionRadius: number = 0.02;
 
 const useControlTools = (
     canvas: Canvas|undefined,
-    arm: MutableRefObject<CottusArm|undefined>
+    arm: MutableRefObject<CottusArm|undefined>,
 ) => {
     
     // Selects a tool and notify it has been selected
     const select = (evt: CanvasButtonEvent) => { 
         const { btnDown, button } = evt;
         if (button === 2) { return; }
+        
         
         for (let tool of tools) {
             if (btnDown && tool.hovered) {

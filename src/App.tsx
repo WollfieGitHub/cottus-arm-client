@@ -14,14 +14,15 @@ const theme = createTheme({
 
 function App() {
   return (
-    <div className="App">
+    <div className="App" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
         <ThemeProvider theme={theme}>
-            <div style={{margin: "0 auto 0 auto", width: 'fit-content'}}>
-                <Typography
+            <div>
+                <Typography sx={{ margin: "50 auto 50 auto" }}
                     variant={"h2"}
                     fontFamily={"comic-sans"}
                     color={"white"}
                 >
+                    Cottus Arm Controller
                 </Typography>
             </div>
             <CottusArmView />   

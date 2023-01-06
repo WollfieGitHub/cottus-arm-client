@@ -16,7 +16,13 @@ export default abstract class WebsocketDatasource<T> {
     /** True if the last reconnection was successful, false otherwise */
     private lastReconnectionSuccessful: boolean = false;
     
+    /** The attempt to reconnect */
     private currentTimeout: NodeJS.Timeout|null = null;
+
+    /** Handling of Linear vs Exponential Backoff */
+    private static NbAttemptsBeforeExponentialTimeout: number = 3;
+    private nbLinearAttempts: number = 0;
+    private exponentialBackoff: boolean = false;
     
     protected constructor(socketEndPoint: string, autoReconnect: boolean) {
         this.url = "ws://localhost:8080" + socketEndPoint;
@@ -32,7 +38,8 @@ export default abstract class WebsocketDatasource<T> {
             .then(response => {
                 if (response.ok) { response.text().then(this.connect); } 
                 else if (this.autoReconnect) { this.tryReconnect(); }
-            });
+            })
+            .catch(reason => { if (this.autoReconnect) { this.tryReconnect(); } });
     }
     
     /** "ES6 : Arrow functions, by default, do not re-scope "this" */
@@ -47,6 +54,8 @@ export default abstract class WebsocketDatasource<T> {
             console.log(`Websocket connection established using id "${connectionId}" from endPoint "${socketUrl}"`);
             // We successfully connected so reset delay
             this.lastReconnectionSuccessful = true;
+            // Go back to linear mode
+            this.exponentialBackoff = false;
         }
         // Connection terminated
         this.socket.onclose = () => {
@@ -62,16 +71,27 @@ export default abstract class WebsocketDatasource<T> {
     
     private tryReconnect = () => {
         if (this.lastReconnectionSuccessful) { this.currentReconnectionDelay = 1; }
-        // Exponentially increase the reconnection delay on failure
-        else { this.currentReconnectionDelay *= 2; }
+        // Exponentially increase the reconnection delay on failure if we are in exponential backoff
+        else if (this.exponentialBackoff) { this.currentReconnectionDelay *= 2; }
+        // Or set the delay to 2 if we are still in linear mode
+        else { this.currentReconnectionDelay = 2; }
         
         const current: number = new Date().getTime();
         if (current - this.lastReconnectionAttempt >= this.currentReconnectionDelay * 1000) {
             this.lastReconnectionAttempt = current;
             this.getIdThenConnect();
-        } else { 
-            console.log(`Next reconnection attempt in ${this.currentReconnectionDelay} seconds...`)
+        } else {
+            // The request fail but an attempt to reconnect is already queued
+            if (this.currentTimeout !== null) { return; }
+            
+            this.nbLinearAttempts += 1;
+            // Switch to exponential mode if we tried too many times
+            if (this.nbLinearAttempts > WebsocketDatasource.NbAttemptsBeforeExponentialTimeout) {
+                this.exponentialBackoff = true;
+            }
+            // Retry in "currentReconnectionDelay" seconds
             this.currentTimeout = setTimeout(this.tryReconnect, this.currentReconnectionDelay*1000+1);
+            console.log(`Next reconnection attempt in ${this.currentReconnectionDelay} seconds...`)
         }
     }
     

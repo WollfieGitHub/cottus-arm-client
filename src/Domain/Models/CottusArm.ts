@@ -32,10 +32,6 @@ export class CottusArm {
      * @param amount The amount by which to move the end effector
      */
     public moveEndEffector(axis: Axis3D, amount: number) {
-        return;
-        fetch(`/api/arm-controller/end-effector/rotate?axis=${axis.id}`, {
-            method: "POST",
-            body: amount as any
-        }).then();
+        
     }
 }

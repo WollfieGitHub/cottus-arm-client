@@ -21,6 +21,8 @@ export default class PerspectiveProjection extends Projection {
     private readonly fov: number;
     /** The aspect ratio of the camera */
     private readonly aspect: number;
+
+    cameraDir(): Vector3D { return this.cameraRot; }
     
     constructor(cameraPos: Vector3D, cameraRot: Vector3D, far: number, near: number, fov: number, aspect: number) {
         super();

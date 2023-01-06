@@ -18,10 +18,12 @@ export abstract class ControlTool implements CanvasTool{
 
     protected _initMousePos: Vector2D = Vector2D.Zero;
     protected _initParam: number = 0;
-    protected _deltaMousePos: Vector2D = Vector2D.Zero;
-    protected _deltaParam: number = 0;
-    protected _currentMousePos: Vector2D = Vector2D.Zero;
-    protected _currentParam: number = 0;
+    
+    protected _deltaMousePos: Vector2D|undefined;
+    protected _deltaParam: number|undefined;
+    
+    protected _currentMousePos: Vector2D|undefined;
+    protected _currentParam: number|undefined;
 
     private _selected: boolean = false;
     get selected(): boolean { return this._selected; }
@@ -34,27 +36,46 @@ export abstract class ControlTool implements CanvasTool{
         this._selected = true;
         this._initMousePos = mousePos;
         this._currentMousePos = this._initMousePos;
+        
         if (this.selectionEquation !== undefined) {
             const param: number = this.selectionEquation.param(mousePos);
             this._currentParam = param;
             this._initParam = param;
         }
+        
     }
     
     public onSelectUpdate(mousePos: Vector2D, arm: CottusArm) {
-        this._deltaMousePos = mousePos.minus(this._currentMousePos);
-        this._currentMousePos = mousePos.minus(this._initMousePos);
-        this.onToolUpdate(arm);
+        // Compute delta only if there is enough info to compute it
+        if (this._currentMousePos !== undefined) {
+            this._deltaMousePos = mousePos.minus(this._currentMousePos);
+            
+        } else { this._deltaMousePos = undefined; }
+        
+        this._currentMousePos = mousePos;
+
         if (this.selectionEquation !== undefined) {
             const curr: number = this.selectionEquation.param(mousePos);
-            this._deltaParam = curr - this._currentParam;
-            this._currentParam = curr - this._initParam;
+            
+            // Compute delta only if there is enough info to compute it
+            if (this._currentParam !== undefined) {
+                this._deltaParam = curr - this._currentParam;
+                
+            } else { this._deltaParam = undefined; }
+            
+            this._currentParam = curr;
         }
+
+        this.onToolUpdate(arm);
     }
     
     protected abstract onToolUpdate(arm: CottusArm): void;
     
-    public onSelectEnd(mousePos: Vector2D) { this._selected = false; }
+    public onSelectEnd(mousePos: Vector2D) {
+        this._currentParam = undefined;
+        this._currentMousePos = undefined;
+        this._selected = false;
+    }
     
     /**
      * Draw the tool on the canvas

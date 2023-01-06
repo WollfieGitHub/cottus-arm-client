@@ -1,7 +1,7 @@
 import {Vector2D} from "../../Domain/Models/Maths/Vector2D";
 import {HandledEventMap} from "./CanvasEventAdapter";
 
-export type MouseButton = 1|2|3;
+export type MouseButton = 0|1|2;
 
 export abstract class CanvasEvent {
     private _active: boolean = true;

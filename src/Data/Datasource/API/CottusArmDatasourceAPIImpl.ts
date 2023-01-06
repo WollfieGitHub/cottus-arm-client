@@ -24,9 +24,9 @@ export default class CottusArmDatasourceAPIImpl
     constructor() { super("/api/arm-state-socket", true); }
     
     protected onMessageReceived(msg: CottusArmAPIEntity): void {
-        const joints: JointAPIEntity[] = msg.joints.filter(j => !j.virtual); 
+        const joints: JointAPIEntity[] = msg.joints;
         this.arm = new CottusArm(
-            joints.map((j, index) => mapEntity(j, index-1 === joints.length, index)),
+            joints.map((j, index) => mapEntity(j, index+1 === joints.length, index)),
             msg.nbJoints,
             mapEntity(joints[joints.length-1], true, joints.length-1)
         );

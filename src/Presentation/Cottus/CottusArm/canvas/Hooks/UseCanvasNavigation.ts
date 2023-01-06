@@ -1,4 +1,4 @@
-﻿import {useEffect, useRef, useState} from "react";
+﻿import {MutableRefObject, useEffect, useRef, useState} from "react";
 import {Vector3D} from "../../../../../Domain/Models/Maths/Vector3D";
 import {Projection, ProjectionType} from "../../../../../Domain/Models/Maths/Projection/Projection";
 import {Axis3D} from "../../../../../Domain/Models/Maths/Axis3D";
@@ -6,6 +6,9 @@ import {OrthographicProjection} from "../../../../../Domain/Models/Maths/Project
 import PerspectiveProjection from "../../../../../Domain/Models/Maths/Projection/PerspectiveProjection";
 import Canvas from "../../../../UIBase/Canvas";
 import {CanvasButtonEvent, CanvasMoveEvent} from "../../../../UIBase/CanvasEvent";
+
+const MovementFactor = 0.25;
+const ScrollFactor = 0.05;
 
 const createProjection = (
     rotX: number, rotZ: number, 
@@ -44,7 +47,8 @@ const createProjection = (
 
 const useCanvasNavigation = (
     canvas: Canvas | undefined, 
-    canvasWidth: number, canvasHeight: number
+    canvasWidth: number, canvasHeight: number,
+    dtRef: MutableRefObject<number>,
 ) => {
     // This is mandatory as the functions are only built for the current render
     const [ rightClick, _setRightClick ] = useState(false);
@@ -57,7 +61,7 @@ const useCanvasNavigation = (
     const [ rotX, setRotX ] = useState(0);
     const [ rotZ, setRotZ ] = useState(0);
     
-    const [ zoomLevel, setZoomLevel ] = useState<number>(2);
+    const [ zoomLevel, setZoomLevel ] = useState<number>(1.4747);
     
     const [ projectionType, setProjectionType ] = useState<ProjectionType>(ProjectionType.Orthographic);
     const [ projection, setProjection ] = useState<Projection>();
@@ -67,11 +71,11 @@ const useCanvasNavigation = (
         const { deltaScroll } = args;
         
         setZoomLevel(zoomLevel => {
-            const delta = deltaScroll.y*0.0005;
+            const delta = deltaScroll.y * dtRef.current * ScrollFactor;
             return Math.max(zoomLevel+delta, 0.01)
         });
     }
-
+    
     // Handle rotation navigation
     const handleMouseBtn = (evt: CanvasButtonEvent) => {
         const { button, btnDown } = evt;
@@ -84,8 +88,8 @@ const useCanvasNavigation = (
         const { deltaPos } = evt;
         
         if (rightClickRef.current) {
-            setRotX(rotX => rotX-deltaPos.y*0.005);
-            setRotZ(rotZ => rotZ+deltaPos.x*0.005);
+            setRotX(rotX => rotX-deltaPos.y * dtRef.current * MovementFactor);
+            setRotZ(rotZ => rotZ+deltaPos.x * dtRef.current * MovementFactor);
         }
     }
 

@@ -27,7 +27,7 @@ export default class MoveTool extends ControlTool {
         joint: Joint|undefined
     ) {
         if (joint === undefined) { this.selectionEquation = undefined; return; }
-        // if (!joint.isEndEffector) { this.selectionEquation = undefined; return; }
+        if (!joint.isEndEffector) { this.selectionEquation = undefined; return; }
 
         const drawAxis = (direction: Vector3D, origin: Vector3D) => {
             ctx.strokeStyle = this.axis.color.toRgbString();
@@ -58,6 +58,11 @@ export default class MoveTool extends ControlTool {
     }
 
     protected onToolUpdate(arm: CottusArm): void {
+        if (this._deltaParam === undefined) { return; }
+
+        // Compute if the camera is aligned with the axis or the opposite
+        // const deltaPos = -this._lastEllipseAxis.dot(this._lastProjection.cameraDir());
+        
         arm.moveEndEffector(this.axis, this._deltaParam);
     }
 }

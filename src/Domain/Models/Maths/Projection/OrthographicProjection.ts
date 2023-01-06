@@ -8,7 +8,7 @@ export class OrthographicProjection extends Projection{
     /** The second base vector of the plan this base produces */
     private readonly b2: Vector3D;
     /** The normal to the plan */
-    private readonly normal: Vector3D;
+    private readonly _normal: Vector3D;
 
     /** The width of the viewport used to normalize the coordinates */
     private readonly viewportWidth: number;
@@ -20,11 +20,14 @@ export class OrthographicProjection extends Projection{
         super();
         this.b1 = b1.normalized();
         this.b2 = b2.normalized();
-        this.normal = this.b1.cross(this.b2);
+        this._normal = this.b1.cross(this.b2);
         
         this.viewportWidth = viewportWidth;
         this.viewportHeight = viewportHeight;
     }
+    
+    // The normal is the direction of the camera
+    cameraDir(): Vector3D { return this._normal; }
 
     /**
      * Return the result of the projection of {@code v} on the plan represented by this base
@@ -49,6 +52,5 @@ export class OrthographicProjection extends Projection{
             v.projectedOnto(normal)
         ));
     }
-    
     
 }

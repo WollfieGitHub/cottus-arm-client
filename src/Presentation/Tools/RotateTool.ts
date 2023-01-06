@@ -9,6 +9,7 @@ import {ControlTool} from "./ControlTool";
 import ProjectionEquation from "../../Domain/Models/Maths/ProjectionEquation";
 import {Ellipse} from "../../Domain/Models/Maths/Shapes/Ellipse";
 import {Vector2D} from "../../Domain/Models/Maths/Vector2D";
+import {normalizedAngle} from "../../Domain/Models/Maths/MathUtils";
 
 const rotateToolSize = 100;
 
@@ -18,6 +19,9 @@ export default class RotateTool extends ControlTool{
     private readonly axis: Axis3D;
     private currentJoint: Joint|undefined;
     
+    private _lastEllipseAxis: Vector3D = Vector3D.Zero;
+    private _lastProjection: Projection|undefined;
+    
     constructor(size: number, axis: Axis3D) {
         super();
         this.size = size;
@@ -25,6 +29,7 @@ export default class RotateTool extends ControlTool{
     }
 
     selectionEquation: ProjectionEquation | undefined;
+    
 
     draw(
         ctx: CanvasRenderingContext2D,
@@ -32,8 +37,8 @@ export default class RotateTool extends ControlTool{
         joint: Joint|undefined
     ) {
         if (joint === undefined) { this.selectionEquation = undefined; return; }
-        this.currentJoint = joint;
         if (!joint.isEndEffector && this.axis.id !== Axis3D.Z.id) { this.selectionEquation = undefined; return; }
+        this.currentJoint = joint;
         
         const drawAxis = (axis: Vector3D, centerPos: Vector3D) => {
             withLineWidth(this.hovered||this.selected
@@ -43,10 +48,17 @@ export default class RotateTool extends ControlTool{
 
                 const { v0, v1 } = axis.planeFromNormal();
 
+                const xAxis = v0.normalized().scale(rotateToolSize);
+                const yAxis = v1.normalized().scale(rotateToolSize);
+                
+                // Record each axis for the ellipse
+                this._lastEllipseAxis = xAxis.cross(yAxis).normalized();
+                this._lastProjection = projection;
+                
                 const ell: Ellipse = projection.projectEllipse(
                     centerPos,
-                    centerPos.plus(v0.normalized().scale(rotateToolSize)),
-                    centerPos.plus(v1.normalized().scale(rotateToolSize)),
+                    centerPos.plus(xAxis),
+                    centerPos.plus(yAxis),
                 );
                 this.selectionEquation = ProjectionEquation.fromEllipse(ell);
                 
@@ -67,16 +79,25 @@ export default class RotateTool extends ControlTool{
         
     }
     
-    private static RotationFactor: number = 1/2;
-    
     protected onToolUpdate(arm: CottusArm): void {
         if (this.currentJoint === undefined) { return; }
-        if (this.selectionEquation === undefined) { return; }
         
-        console.log(this._deltaParam * RotateTool.RotationFactor);
-        arm.rotateJoint(
-            this.currentJoint.index, 
-            this._deltaParam * RotateTool.RotationFactor
-        );
+        if (this.currentJoint.isEndEffector) { this.rotateEndEffector(arm, this.currentJoint); }
+        else { this.rotateJoint(arm, this.currentJoint); }
+    }
+    
+    protected rotateJoint(arm: CottusArm, joint: Joint): void {
+        if (this._deltaParam === undefined) { return; }
+        if (this.selectionEquation === undefined || this._lastProjection === undefined) { return; }
+
+        const deltaAngle = // Compute if the camera is aligned with the axis or the opposite
+            -this._lastEllipseAxis.dot(this._lastProjection.cameraDir())
+            * normalizedAngle(this._deltaParam);
+
+        arm.rotateJoint( joint.index, deltaAngle );
+    }
+    
+    protected rotateEndEffector(arm: CottusArm, joint: Joint): void {
+        
     }
 }

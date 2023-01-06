@@ -5,6 +5,9 @@ import {Vector2D} from "../Vector2D";
 
 export abstract class Projection {
 
+    /** @return The direction in which the camera is looking */
+    abstract cameraDir(): Vector3D;
+    
     /**
      * Project the vector from world space to "camera" space
      * using the implementation of the projection
