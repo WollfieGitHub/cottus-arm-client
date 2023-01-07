@@ -1,4 +1,4 @@
-﻿import {Rect} from "../../Domain/Models/Maths/Shapes/Rect";
+import {Rect} from "../../Domain/Models/Maths/Shapes/Rect";
 import {Vector2D} from "../../Domain/Models/Maths/Vector2D";
 
 export abstract class ClickableCanvasButton {

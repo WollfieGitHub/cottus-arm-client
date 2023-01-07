@@ -1,4 +1,4 @@
-﻿import CanvasEventAdapter, {CanvasCallback, CanvasEventHandler, HandledEventMap} from "./CanvasEventAdapter";
+import CanvasEventAdapter, {CanvasCallback, HandledEventMap} from "./CanvasEventAdapter";
 
 export default class Canvas {
     /** The actual canvas element */

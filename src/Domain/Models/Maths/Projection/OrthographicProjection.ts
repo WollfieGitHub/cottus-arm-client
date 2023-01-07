@@ -1,4 +1,4 @@
-﻿import {Vector3D} from "../Vector3D";
+import {Vector3D} from "../Vector3D";
 import {Projection} from "./Projection";
 
 /** A base for a plan positioned in 3D space */

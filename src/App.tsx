@@ -2,7 +2,6 @@ import React from 'react';
 import "./App.scss";
 import CottusArmView from "./View/Cottus/CottusArm/CottusArmView";
 import {createTheme, ThemeProvider, Typography} from "@mui/material";
-import {LineToAnimationView} from "./View/Cottus/Animation/LineToAnimationView";
 
 const theme = createTheme({
     palette: {

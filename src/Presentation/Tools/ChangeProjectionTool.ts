@@ -1,6 +1,6 @@
 ﻿import {Projection, ProjectionType} from "../../Domain/Models/Maths/Projection/Projection";
 import CanvasTool from "../UIBase/CanvasTool";
-import {ClickableCanvasButton, OnClick} from "../UIBase/ClickableCanvasButton";
+import {ClickableCanvasButton} from "../UIBase/ClickableCanvasButton";
 import {Rect} from "../../Domain/Models/Maths/Shapes/Rect";
 import {Vector2D} from "../../Domain/Models/Maths/Vector2D";
 

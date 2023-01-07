@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @param T The type of response we expect from the websocket
  */
 export default abstract class WebsocketDatasource<T> {

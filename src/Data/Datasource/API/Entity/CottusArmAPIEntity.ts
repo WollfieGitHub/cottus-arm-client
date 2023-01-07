@@ -1,4 +1,4 @@
-﻿import {JointAPIEntity} from "./JointAPIEntity";
+import {JointAPIEntity} from "./JointAPIEntity";
 import {Vector3DAPIEntity} from "./Vector3DAPIEntity";
 
 export interface CottusArmAPIEntity {

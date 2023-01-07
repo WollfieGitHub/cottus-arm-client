@@ -1,15 +1,5 @@
-﻿import {RefObject} from "react";
 import {Vector2D} from "../../Domain/Models/Maths/Vector2D";
-import {Vector3D} from "../../Domain/Models/Maths/Vector3D";
-import {FormatAlignLeft} from "@mui/icons-material";
-import {
-    CanvasButtonEvent,
-    CanvasClickEvent,
-    CanvasEvent,
-    CanvasMouseEvent,
-    CanvasMoveEvent,
-    CanvasWheelEvent, MouseButton
-} from "./CanvasEvent";
+import {CanvasButtonEvent, CanvasClickEvent, CanvasMoveEvent, CanvasWheelEvent, MouseButton} from "./CanvasEvent";
 
 export interface HandledEventMap {
     "canvasMove": CanvasMoveEvent,

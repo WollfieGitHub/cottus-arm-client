@@ -1,6 +1,5 @@
-﻿import {Vector3D} from "../Vector3D";
+import {Vector3D} from "../Vector3D";
 import {Ellipse} from "../Shapes/Ellipse";
-import {Axis3D} from "../Axis3D";
 import {Vector2D} from "../Vector2D";
 
 export abstract class Projection {

@@ -1,4 +1,3 @@
-import {Vector3D} from "../../../../../Domain/Models/Maths/Vector3D";
 import Color from "../../../../Utils/Color";
 import {Projection} from "../../../../../Domain/Models/Maths/Projection/Projection";
 import {Joint} from "../../../../../Domain/Models/Joint";

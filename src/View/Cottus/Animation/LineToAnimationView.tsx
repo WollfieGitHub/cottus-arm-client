@@ -1,5 +1,5 @@
 import {useViewModel} from "../../../Presentation/Cottus/CottusArm/Animation/LineToAnimationViewModel";
-import {Accordion, AccordionDetails, AccordionSummary, Card, Typography} from "@mui/material";
+import {Accordion, AccordionDetails, AccordionSummary, Typography} from "@mui/material";
 import {ExpandMore} from "@mui/icons-material"
 
 export const LineToAnimationView = () => {

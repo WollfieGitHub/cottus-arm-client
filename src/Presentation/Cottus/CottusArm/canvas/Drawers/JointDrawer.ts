@@ -1,12 +1,9 @@
-﻿import {Joint} from "../../../../../Domain/Models/Joint";
 import Color from "../../../../Utils/Color";
 import getColorOf from "./JointColorAdapter";
 import {Projection} from "../../../../../Domain/Models/Maths/Projection/Projection";
 import {CottusArm} from "../../../../../Domain/Models/CottusArm";
 import {Vector3D} from "../../../../../Domain/Models/Maths/Vector3D";
 import {withLineWidth, withOpacity} from "../../../../Utils/CanvasUtil";
-import {Axis3D} from "../../../../../Domain/Models/Maths/Axis3D";
-import {Vector2D} from "../../../../../Domain/Models/Maths/Vector2D";
 
 const articulationRadius: number = 0.025;
 

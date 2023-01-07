@@ -1,6 +1,5 @@
-﻿import useCottusArmViewModel from "../../../Presentation/Cottus/CottusArm/CottusArmViewModel";
+import useCottusArmViewModel from "../../../Presentation/Cottus/CottusArm/CottusArmViewModel";
 import {Box, Card} from "@mui/material";
-import {TempAngleSlider} from "./TempAngleSlider";
 import SpecificationView from "./SpecificationView";
 
 const CottusArmView = () => {

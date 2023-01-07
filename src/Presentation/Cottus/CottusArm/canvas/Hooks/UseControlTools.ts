@@ -1,7 +1,7 @@
-﻿import RotateTool from "../../../../Tools/RotateTool";
+import RotateTool from "../../../../Tools/RotateTool";
 import {Axis3D} from "../../../../../Domain/Models/Maths/Axis3D";
 import MoveTool from "../../../../Tools/MoveTool";
-import {MutableRefObject, RefObject, useEffect} from "react";
+import {MutableRefObject, useEffect} from "react";
 import {ControlTool} from "../../../../Tools/ControlTool";
 import {Projection} from "../../../../../Domain/Models/Maths/Projection/Projection";
 import {Joint} from "../../../../../Domain/Models/Joint";

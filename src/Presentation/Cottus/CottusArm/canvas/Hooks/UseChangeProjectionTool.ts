@@ -1,4 +1,4 @@
-﻿import {RefObject, useEffect} from "react";
+﻿import {useEffect} from "react";
 import {ProjectionType} from "../../../../../Domain/Models/Maths/Projection/Projection";
 import ChangeProjectionTool from "../../../../Tools/ChangeProjectionTool";
 

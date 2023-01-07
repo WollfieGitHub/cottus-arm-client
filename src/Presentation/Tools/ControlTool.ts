@@ -1,4 +1,4 @@
-﻿import ProjectionEquation from "../../Domain/Models/Maths/ProjectionEquation";
+import ProjectionEquation from "../../Domain/Models/Maths/ProjectionEquation";
 import {Joint} from "../../Domain/Models/Joint";
 import {Projection} from "../../Domain/Models/Maths/Projection/Projection";
 import CanvasTool from "../UIBase/CanvasTool";

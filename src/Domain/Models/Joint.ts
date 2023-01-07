@@ -1,5 +1,4 @@
-﻿import {Axis3D} from "./Maths/Axis3D";
-import {Vector3D} from "./Maths/Vector3D";
+﻿import {Vector3D} from "./Maths/Vector3D";
 import {Transform} from "./Transform";
 
 export interface Joint {

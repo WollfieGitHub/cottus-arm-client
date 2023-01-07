@@ -1,14 +1,12 @@
-﻿import {Joint} from "../../Domain/Models/Joint";
+import {Joint} from "../../Domain/Models/Joint";
 import {CottusArm} from "../../Domain/Models/CottusArm";
 import {Projection} from "../../Domain/Models/Maths/Projection/Projection";
 import {withLineWidth} from "../Utils/CanvasUtil";
 import {Axis3D} from "../../Domain/Models/Maths/Axis3D";
-import Color from "../Utils/Color";
 import {Vector3D} from "../../Domain/Models/Maths/Vector3D";
 import {ControlTool} from "./ControlTool";
 import ProjectionEquation from "../../Domain/Models/Maths/ProjectionEquation";
 import {Ellipse} from "../../Domain/Models/Maths/Shapes/Ellipse";
-import {Vector2D} from "../../Domain/Models/Maths/Vector2D";
 import {normalizedAngle} from "../../Domain/Models/Maths/MathUtils";
 
 const rotateToolSize = 100;
@@ -95,6 +93,8 @@ export default class RotateTool extends ControlTool{
             * normalizedAngle(this._deltaParam);
 
         arm.rotateJoint( joint.index, deltaAngle );
+        
+        console.log("BOOM")
     }
     
     protected rotateEndEffector(arm: CottusArm, joint: Joint): void {

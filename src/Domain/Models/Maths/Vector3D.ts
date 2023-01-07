@@ -1,8 +1,3 @@
-﻿import {Axis3D} from "./Axis3D";
-import {isElementType} from "@testing-library/user-event/dist/utils";
-import {Exception} from "sass";
-import {constants} from "crypto";
-
 export class Vector3D {
     public static readonly Zero: Vector3D = new Vector3D(0, 0, 0);
     

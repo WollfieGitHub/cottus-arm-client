@@ -1,10 +1,9 @@
-﻿/** For the scope of the {@code draw} function, the lineWidth property of the ctx will have its
+/** For the scope of the {@code draw} function, the lineWidth property of the ctx will have its
  * width multiplied by the specified widthFactor, and it will be reset to default afterwards
  * @param widthFactor The factor by which to multiply the line width
  * @param ctx The canvas rendering context
  * @param draw The function to invoke with modified line Width
  */
-import {Vector3D} from "../../Domain/Models/Maths/Vector3D";
 import {Vector2D} from "../../Domain/Models/Maths/Vector2D";
 import Color from "./Color";
 import {Projection} from "../../Domain/Models/Maths/Projection/Projection";

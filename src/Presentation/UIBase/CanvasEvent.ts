@@ -1,5 +1,4 @@
 import {Vector2D} from "../../Domain/Models/Maths/Vector2D";
-import {HandledEventMap} from "./CanvasEventAdapter";
 
 export type MouseButton = 0|1|2;
 

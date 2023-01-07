@@ -3,7 +3,6 @@ import {Vector2D} from "./Vector2D";
 import {BASE_PRECISION} from "../../../Constants";
 import {Ellipse} from "./Shapes/Ellipse";
 import {Axis3D} from "./Axis3D";
-import {Vector3D} from "./Vector3D";
 
 export type Equation = (v: Vector2D) => {proj: Vector2D, param: number, distance: number};
 export default class ProjectionEquation {

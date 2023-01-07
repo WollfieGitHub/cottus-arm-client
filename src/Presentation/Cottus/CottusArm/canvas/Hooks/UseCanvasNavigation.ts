@@ -1,4 +1,4 @@
-﻿import {MutableRefObject, useEffect, useRef, useState} from "react";
+import {MutableRefObject, useEffect, useRef, useState} from "react";
 import {Vector3D} from "../../../../../Domain/Models/Maths/Vector3D";
 import {Projection, ProjectionType} from "../../../../../Domain/Models/Maths/Projection/Projection";
 import {Axis3D} from "../../../../../Domain/Models/Maths/Axis3D";
@@ -6,6 +6,7 @@ import {OrthographicProjection} from "../../../../../Domain/Models/Maths/Project
 import PerspectiveProjection from "../../../../../Domain/Models/Maths/Projection/PerspectiveProjection";
 import Canvas from "../../../../UIBase/Canvas";
 import {CanvasButtonEvent, CanvasMoveEvent} from "../../../../UIBase/CanvasEvent";
+import {normalizedAngle} from "../../../../../Domain/Models/Maths/MathUtils";
 
 const MovementFactor = 0.25;
 const ScrollFactor = 0.05;
@@ -76,7 +77,7 @@ const useCanvasNavigation = (
         });
     }
     
-    // Handle rotation navigation
+    // Handle rotation begin and end
     const handleMouseBtn = (evt: CanvasButtonEvent) => {
         const { button, btnDown } = evt;
         
@@ -84,12 +85,12 @@ const useCanvasNavigation = (
         else if (!btnDown && button === 2) { setRightClick(false); }
     }
     
+    // Handle rotation
     const handleMouseMove = (evt: CanvasMoveEvent) => {
         const { deltaPos } = evt;
-        
         if (rightClickRef.current) {
-            setRotX(rotX => rotX-deltaPos.y * dtRef.current * MovementFactor);
-            setRotZ(rotZ => rotZ+deltaPos.x * dtRef.current * MovementFactor);
+            setRotX(rotX => normalizedAngle(rotX - deltaPos.y*dtRef.current*MovementFactor));
+            setRotZ(rotZ => normalizedAngle(rotZ + deltaPos.x*dtRef.current*MovementFactor));
         }
     }
 

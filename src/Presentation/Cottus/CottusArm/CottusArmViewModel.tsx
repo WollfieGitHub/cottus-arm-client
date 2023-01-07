@@ -1,4 +1,4 @@
-﻿import {useEffect, useRef, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import {CottusArm} from "../../../Domain/Models/CottusArm";
 import {CottusArmRepositoryImpl} from "../../../Data/Repository/CottusArmRepositoryImpl";
 import CottusArmDatasourceAPIImpl from "../../../Data/Datasource/API/CottusArmDatasourceAPIImpl";
@@ -11,7 +11,6 @@ import Color from "../../Utils/Color";
 import {drawReferential} from "./canvas/Drawers/ReferentialDrawer";
 import {drawArm} from "./canvas/Drawers/JointDrawer";
 import {Projection} from "../../../Domain/Models/Maths/Projection/Projection";
-import {Vector2D} from "../../../Domain/Models/Maths/Vector2D";
 import drawEndEffector from "./canvas/Drawers/EndEffectorDrawer";
 
 const canvasWidth: number = 700;

@@ -1,4 +1,4 @@
-﻿import {Projection} from "./Projection";
+import {Projection} from "./Projection";
 import {Vector3D} from "../Vector3D";
 
 export default class PerspectiveProjection extends Projection {

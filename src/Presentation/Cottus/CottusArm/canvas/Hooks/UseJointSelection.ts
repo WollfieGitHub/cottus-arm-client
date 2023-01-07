@@ -1,7 +1,6 @@
-﻿import {CottusArm} from "../../../../../Domain/Models/CottusArm";
+import {CottusArm} from "../../../../../Domain/Models/CottusArm";
 import {Projection} from "../../../../../Domain/Models/Maths/Projection/Projection";
-import React, {MutableRefObject, RefObject, useEffect, useRef, useState} from "react";
-import {X509Certificate} from "crypto";
+import {MutableRefObject, useEffect, useRef, useState} from "react";
 import Canvas from "../../../../UIBase/Canvas";
 import {Vector2D} from "../../../../../Domain/Models/Maths/Vector2D";
 import {CanvasButtonEvent, CanvasMoveEvent} from "../../../../UIBase/CanvasEvent";
@@ -26,7 +25,7 @@ const useJointSelection = (
     
     const canvasIsLoaded: boolean = canvas !== undefined;
 
-    const onCanvasMove = (evt: CanvasMoveEvent) => {
+    const onCanvasMoved = (evt: CanvasMoveEvent) => {
         const { x, y } = evt.pos;
 
         const arm = armRef.current;
@@ -49,15 +48,15 @@ const useJointSelection = (
         else { setHoveredJoint(undefined); }
     }
     
-    const onCanvasClick = (evt: CanvasButtonEvent) => {
+    const onCanvasClicked = (evt: CanvasButtonEvent) => {
         if (hoveredJointRef.current !== undefined && evt.button !== 2 && evt.btnDown) { setSelectedJoint(hoveredJointRef.current); }
         // Wants to deselect, so clicked on no joint
         else if (evt.button !== 2 && evt.btnDown) { setSelectedJoint(undefined); }
     }
     
     useEffect(() => {
-        canvas?.addListener("canvasMove", onCanvasMove);
-        canvas?.addListener("canvasButton", onCanvasClick);
+        canvas?.addListener("canvasMove", onCanvasMoved);
+        canvas?.addListener("canvasButton", onCanvasClicked);
         
     }, [ canvasIsLoaded ])
     
