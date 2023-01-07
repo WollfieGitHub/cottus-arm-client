@@ -11,16 +11,15 @@ import {Vector2D} from "../../Domain/Models/Maths/Vector2D";
 
 export default class MoveTool extends ControlTool {
     
-    private readonly _size: number;
-    private readonly _axis: Axis3D;
+    private readonly size: number;
+    private readonly axis: Axis3D;
     
-    private _lastAxisDirection: Vector2D | undefined;
-    private _xAxisProjection: Vector2D | undefined;
+    private lastAxisDirection: Vector2D | undefined;
     
     constructor(size: number, axis: Axis3D) {
         super();
-        this._size = size;
-        this._axis = axis;
+        this.size = size;
+        this.axis = axis;
     }
 
     selectionEquation: ProjectionEquation | undefined;
@@ -34,14 +33,13 @@ export default class MoveTool extends ControlTool {
         if (!joint.isEndEffector) { this.selectionEquation = undefined; return; }
 
         const drawAxis = (direction: Vector3D, origin: Vector3D) => {
-            ctx.strokeStyle = this._axis.color.toRgbString();
+            ctx.strokeStyle = this.axis.color.toRgbString();
 
             const [p0, p1] = projection.projectAll([
-                origin, origin.plus(direction.scale(this._size))
+                origin, origin.plus(direction.scale(this.size))
             ])
             this.selectionEquation = ProjectionEquation.fromSeg(p0, p1);
-            this._lastAxisDirection = projection.project(direction).normalized();
-            this._xAxisProjection = projection.project(Axis3D.X.unitVector).normalized();
+            this.lastAxisDirection = projection.project(direction);
 
             ctx.beginPath();
             ctx.moveTo(p0.x, p0.y);
@@ -50,7 +48,7 @@ export default class MoveTool extends ControlTool {
         }
 
         let direction: Vector3D = Vector3D.Zero;
-        switch (this._axis.id) {
+        switch (this.axis.id) {
             case 0: { direction = (joint.isEndEffector ? Axis3D.X.unitVector : joint.transform.localX); break; }
             case 1: { direction = (joint.isEndEffector ? Axis3D.Y.unitVector : joint.transform.localY); break; }
             case 2: { direction = (joint.isEndEffector ? Axis3D.Z.unitVector : joint.transform.localZ); break; }
@@ -64,10 +62,17 @@ export default class MoveTool extends ControlTool {
     }
 
     protected onToolUpdate(arm: CottusArm): void {
-        if (this._deltaParam === undefined || this._lastAxisDirection === undefined || this._xAxisProjection === undefined) { return; }
-
+        if (this._deltaParam === undefined 
+            || this.lastAxisDirection === undefined 
+            || this._deltaMousePos === undefined
+        ) { return; }
+        
         // Compute if the camera is aligned with the axis or the opposite
-        const deltaPos = this._deltaParam * this._size * this._lastAxisDirection.dot(this._xAxisProjection);
-        arm.moveEndEffector(this._axis, deltaPos);
+        const deltaPos = Math.abs(this._deltaParam) * 
+            this.size * 
+            Math.sin(this.lastAxisDirection.normalized().dot( this._deltaMousePos.normalized() )); // Direction of movement
+        console.log()
+        
+        arm.moveEndEffector(this.axis, deltaPos);
     }
 }

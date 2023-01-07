@@ -53,4 +53,26 @@ export class CottusArm {
             headers: new Headers({'content-type': 'application/json'})
         }).then();
     }
+
+    /**
+     * Rotate the end effector around the given axis by the specified amount
+     * @param axis The axis around which to rotate the end effector
+     * @param amount The amount by which to rotate the end effector
+     */
+    rotateEndEffector(axis: Axis3D, deltaAngle: number) {
+        if (Number.isNaN(deltaAngle)) { return; }
+
+        const rotDiff: Vector3D = Vector3D.Zero.withCoordinate(axis.id, deltaAngle);
+
+        fetch('/api/arm-controller/relative-specification', {
+            method: "POST",
+            body: JSON.stringify({
+                root: null,
+                armAngle: 0,
+                endEffectorPosition: fromVector(Vector3D.Zero),
+                endEffectorRotation: { eulerAngles: fromVector(rotDiff) }
+            } as RelativeEndEffectorSpecificationAPIEntity) as any,
+            headers: new Headers({'content-type': 'application/json'})
+        }).then();
+    }
 }

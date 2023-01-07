@@ -68,9 +68,9 @@ export default class RotateTool extends ControlTool{
         
         let direction: Vector3D = Vector3D.Zero;
         switch (this.axis.id) {
-            case 0: { direction = joint.transform.localX; break; }
-            case 1: { direction = joint.transform.localY; break; }
-            case 2: { direction = joint.transform.localZ; break; }
+            case 0: { direction = joint.isEndEffector ? Axis3D.X.unitVector : joint.transform.localX; break; }
+            case 1: { direction = joint.isEndEffector ? Axis3D.Y.unitVector : joint.transform.localY; break; }
+            case 2: { direction = joint.isEndEffector ? Axis3D.Z.unitVector : joint.transform.localZ; break; }
         }
         
         drawAxis(direction, joint.transform.origin);
@@ -79,12 +79,6 @@ export default class RotateTool extends ControlTool{
     
     protected onToolUpdate(arm: CottusArm): void {
         if (this.currentJoint === undefined) { return; }
-        
-        if (this.currentJoint.isEndEffector) { this.rotateEndEffector(arm, this.currentJoint); }
-        else { this.rotateJoint(arm, this.currentJoint); }
-    }
-    
-    protected rotateJoint(arm: CottusArm, joint: Joint): void {
         if (this._deltaParam === undefined) { return; }
         if (this.selectionEquation === undefined || this._lastProjection === undefined) { return; }
 
@@ -92,12 +86,8 @@ export default class RotateTool extends ControlTool{
             -this._lastEllipseAxis.dot(this._lastProjection.cameraDir())
             * normalizedAngle(this._deltaParam);
 
-        arm.rotateJoint( joint.index, deltaAngle );
         
-        console.log("BOOM")
-    }
-    
-    protected rotateEndEffector(arm: CottusArm, joint: Joint): void {
-        
+        if (this.currentJoint.isEndEffector) { arm.rotateEndEffector(this.axis, deltaAngle); }
+        else { arm.rotateJoint( this.currentJoint.index, deltaAngle ); }
     }
 }
