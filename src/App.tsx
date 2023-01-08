@@ -9,6 +9,11 @@ const theme = createTheme({
         primary: { main: '#00bfa5', },
         secondary: { main: '#ff9e80', },
     },
+    typography: {
+        fontWeightLight: 500,
+        fontWeightRegular: 500,
+        fontWeightMedium: 700,
+    },
 })
 
 function App() {

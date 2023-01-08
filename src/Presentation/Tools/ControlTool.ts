@@ -31,11 +31,14 @@ export abstract class ControlTool implements CanvasTool{
     private _hovered: boolean = false;
     get hovered(): boolean { return this._hovered; }
     set hovered(value: boolean) { this._hovered = value; }
-    
+
+    private lastUpdate: number = Date.now();
+
     public onSelectBegin(mousePos: Vector2D) {
         this._selected = true;
         this._initMousePos = mousePos;
         this._currentMousePos = this._initMousePos;
+        this.lastUpdate = Date.now();
         
         if (this.selectionEquation !== undefined) {
             const param: number = this.selectionEquation.param(mousePos);
@@ -45,12 +48,14 @@ export abstract class ControlTool implements CanvasTool{
         
     }
     
-    public updatePos(mousePos: Vector2D) {
-        this._currentMousePos = mousePos;
-    }
+    /** Used for debug */
+    public updatePos(mousePos: Vector2D) { this._currentMousePos = mousePos; }
     
     public onSelectUpdate(mousePos: Vector2D, arm: CottusArm) {
         // Compute delta only if there is enough info to compute it
+        const currentUpdate: number = Date.now();
+        const dt: number = currentUpdate - this.lastUpdate;
+        
         if (this._currentMousePos !== undefined) {
             this._deltaMousePos = mousePos.minus(this._currentMousePos);
             
@@ -63,13 +68,14 @@ export abstract class ControlTool implements CanvasTool{
             
             // Compute delta only if there is enough info to compute it
             if (this._currentParam !== undefined) {
-                this._deltaParam = curr - this._currentParam;
+                this._deltaParam = (curr - this._currentParam);
                 
             } else { this._deltaParam = undefined; }
             
             this._currentParam = curr;
         }
-
+        
+        this.lastUpdate = currentUpdate;
         this.onToolUpdate(arm);
     }
     

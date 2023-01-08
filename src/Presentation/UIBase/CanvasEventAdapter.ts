@@ -120,4 +120,15 @@ export default class CanvasEventAdapter {
             handler.callback(event);
         }
     }
+
+    /** Remove all listeners from the canvas */
+    public removeListeners() {
+        this.canvas.removeEventListener('wheel', this.handleMouseEvent);
+        this.canvas.removeEventListener('mousedown', this.handleMouseEvent);
+        this.canvas.removeEventListener('mouseup', this.handleMouseEvent);
+        this.canvas.removeEventListener('click', this.handleMouseEvent);
+        this.canvas.removeEventListener('contextmenu', this.handleMouseEvent);
+        this.canvas.removeEventListener('mousemove', this.handleMouseEvent);
+        this.canvas.removeEventListener('wheel', this.handleMouseScrollEvent);
+    }
 }

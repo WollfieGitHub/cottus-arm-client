@@ -1,13 +1,14 @@
 import RotateTool from "../../../../Tools/RotateTool";
 import {Axis3D} from "../../../../../Domain/Models/Maths/Axis3D";
 import MoveTool from "../../../../Tools/MoveTool";
-import {MutableRefObject, useEffect} from "react";
+import {MutableRefObject, useEffect, useState} from "react";
 import {ControlTool} from "../../../../Tools/ControlTool";
 import {Projection} from "../../../../../Domain/Models/Maths/Projection/Projection";
 import {Joint} from "../../../../../Domain/Models/Joint";
 import Canvas from "../../../../UIBase/Canvas";
 import {CanvasButtonEvent, CanvasClickEvent, CanvasMoveEvent} from "../../../../UIBase/CanvasEvent";
 import {CottusArm} from "../../../../../Domain/Models/CottusArm";
+import {EditMode} from "../../../../Tools/EditMode";
 
 // Tools to rotate a node
 const rToolX: RotateTool = new RotateTool(100, Axis3D.X);
@@ -27,12 +28,14 @@ const hover = (tool: ControlTool|undefined) => {
     if (tool !== undefined) { tool.hovered = true; }
 }
 
-const ToolSelectionRadius: number = 0.02;
+const ToolSelectionRadius: number = 0.05;
 
 const useControlTools = (
     canvas: Canvas|undefined,
     arm: MutableRefObject<CottusArm|undefined>,
 ) => {
+    
+    const [ editMode, setEditMode ] = useState<EditMode>(EditMode.JointMode);
     
     // Selects a tool and notify it has been selected
     const select = (evt: CanvasButtonEvent) => { 
@@ -64,7 +67,6 @@ const useControlTools = (
             selectedTool.onSelectUpdate(evt.pos, arm.current);
             return; 
         }
-        tools.forEach(tool => tool.updatePos(evt.pos))
         
         // Otherwise, find a tool which is hovered
         const candidates = tools
@@ -93,7 +95,7 @@ const useControlTools = (
         canvas?.addListener('canvasClick', onMouseClicked, 0);
     }, [ canvasIsLoaded ])
     
-    return { draw }
+    return { draw, editMode, setEditMode }
 }
 
 export default useControlTools;

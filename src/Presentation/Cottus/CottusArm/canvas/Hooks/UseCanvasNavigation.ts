@@ -12,13 +12,16 @@ const MovementFactor = 0.25;
 const ScrollFactor = 0.05;
 
 const createProjection = (
-    rotX: number, rotZ: number, 
+    rotX: number, rotZ: number,
     type: ProjectionType, zoom: number = 1,
     canvasWidth: number, canvasHeight: number,
 ): Projection => {
-    const perspectiveRotVector: Vector3D = new Vector3D(rotX+2*Math.PI/3,0, rotZ-Math.PI/4);
-    const rotVector: Vector3D = new Vector3D(-rotX,0, rotZ-Math.PI/4);
-    const posVector: Vector3D = new Vector3D(0,750, 750);
+    
+    const perspectiveRotVector: Vector3D = new Vector3D(Math.PI-Math.PI/4,0, Math.PI-rotZ);
+    const rotVector: Vector3D = new Vector3D(0,0, -rotZ-Math.PI/4);
+    const posVector: Vector3D = new Vector3D(400,400, 500).scale(Math.max(zoom, 0.001));
+    
+    console.log(posVector.rotatedAtOriginAround(Axis3D.Z.id, -rotVector.z));
     
     switch (type) {
         case ProjectionType.Orthographic: {
@@ -30,16 +33,16 @@ const createProjection = (
             const rightVector: Vector3D = dirVector.cross(upVector).scale(-1);
 
             return new OrthographicProjection(
-                rightVector.rotatedAtOriginUsing(rotVector),
-                upVector.scale(1).rotatedAtOriginUsing(rotVector),
+                rightVector.rotatedAtOriginUsing(rotVector.scale(-1)),
+                upVector.rotatedAtOriginUsing(rotVector.scale(-1)),
                 canvasWidth*orthographicZoomMultiplier*zoom,
                 canvasHeight*orthographicZoomMultiplier*zoom
             );
         }
         case ProjectionType.Perspective: {
             return new PerspectiveProjection(
-                posVector, perspectiveRotVector,
-                100.0, 0.1, 70,
+                posVector.rotatedAtOriginAround(Axis3D.Z.id, -rotVector.z), perspectiveRotVector,
+                1000.0, 0.000001, 70,
                 canvasWidth/canvasHeight
             )
         }
@@ -111,7 +114,7 @@ const useCanvasNavigation = (
         ));
     }, [rotX, rotZ, projectionType, zoomLevel, canvasWidth, canvasHeight])
     
-    return { projection: projection, setProjection: setProjectionType };
+    return { projection: projection, setProjectionType, projectionType };
 }
 
 export default useCanvasNavigation;

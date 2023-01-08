@@ -39,11 +39,15 @@ export default class RotateTool extends ControlTool{
         if (!joint.isEndEffector && this.axis.id !== Axis3D.Z.id) { this.selectionEquation = undefined; return; }
         this.currentJoint = joint;
         
+        const lineWidth = this.hovered||this.selected
+            ? ControlTool.selectedWidth
+            : ControlTool.defaultWidth;
+        
         const drawAxis = (axis: Vector3D, centerPos: Vector3D) => {
-            withLineWidth(this.hovered||this.selected
-                ? ControlTool.selectedWidth
-                : ControlTool.defaultWidth, ctx, () => {
-                ctx.strokeStyle = this.axis.color.toRgbString();
+            withLineWidth(lineWidth, ctx, () => {
+                ctx.strokeStyle = joint.isEndEffector
+                    ? this.axis.endEffectorColor.toRgbString()
+                    : this.axis.color.toRgbString();
 
                 const { v0, v1 } = axis.planeFromNormal();
 
@@ -69,9 +73,9 @@ export default class RotateTool extends ControlTool{
         
         let direction: Vector3D = Vector3D.Zero;
         switch (this.axis.id) {
-            case 0: { direction = joint.isEndEffector ? Axis3D.X.unitVector : joint.transform.localX; break; }
-            case 1: { direction = joint.isEndEffector ? Axis3D.Y.unitVector : joint.transform.localY; break; }
-            case 2: { direction = joint.isEndEffector ? Axis3D.Z.unitVector : joint.transform.localZ; break; }
+            case 0: { direction = joint.transform.localX; break; }
+            case 1: { direction = joint.transform.localY; break; }
+            case 2: { direction = joint.transform.localZ; break; }
         }
         
         drawAxis(direction, joint.transform.origin);
@@ -84,10 +88,8 @@ export default class RotateTool extends ControlTool{
         if (this.selectionEquation === undefined || this._lastProjection === undefined) { return; }
 
         const deltaAngle = // Compute if the camera is aligned with the axis or the opposite
-            -Math.sign(this._lastEllipseAxis.normalized().dot(this._lastProjection.cameraDir().normalized()))
+            -Math.sign(this._lastEllipseAxis.dot(this._lastProjection.cameraDir()))
             * normalizedAngle(this._deltaParam);
-
-        console.log(deltaAngle);
         
         if (this.currentJoint.isEndEffector) { arm.rotateEndEffector(this.axis, deltaAngle); }
         else { arm.rotateJoint( this.currentJoint.index, deltaAngle ); }

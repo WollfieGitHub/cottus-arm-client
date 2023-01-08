@@ -21,6 +21,8 @@ export default class PerspectiveProjection extends Projection {
     private readonly fov: number;
     /** The aspect ratio of the camera */
     private readonly aspect: number;
+    /** The focal length of the camera */
+    private focalLength: number;
 
     cameraDir(): Vector3D { return this.cameraRot; }
     
@@ -32,22 +34,25 @@ export default class PerspectiveProjection extends Projection {
         this.near = near;
         this.fov = fov;
         this.aspect = aspect;
+        this.focalLength = 1/(Math.tan( this.fov*Math.PI/360 ) * this.aspect);
+
     }
 
     project(worldSpaceP: Vector3D): Vector3D {
-        const focalLength = 1/(Math.tan( this.fov*Math.PI/360 ) * this.aspect);
         
         // The point in the camera space
         // Y rotation is not useful here
-        const camSpaceP = worldSpaceP.minus(this.cameraPos)
-            .rotatedAtOriginAround(2, -this.cameraRot.z)
-            .rotatedAtOriginAround(0, -this.cameraRot.x)
+        const camSpaceP = worldSpaceP
+            .minus(this.cameraPos)
+            .rotatedAtOriginAround(2, this.cameraRot.z)
+            .rotatedAtOriginAround(0, this.cameraRot.x)
+            
         
         let { x: rX, y: rY, z: rZ } = camSpaceP;
         
         const wClip = -rZ;
-        const xClip = focalLength*rX/wClip;
-        const yClip = focalLength*rY/wClip;
+        const xClip = this.focalLength*rX/wClip;
+        const yClip = this.focalLength*rY/wClip;
         const zClip = ((this.near+this.far)/(this.near-this.far) * rZ 
             + 2*(this.near*this.far)/(this.near-this.far) ) / wClip;
         

@@ -2,6 +2,7 @@ import Color from "../../../../Utils/Color";
 import {Projection} from "../../../../../Domain/Models/Maths/Projection/Projection";
 import {Joint} from "../../../../../Domain/Models/Joint";
 import {drawProjectedLine, withLineWidth} from "../../../../Utils/CanvasUtil";
+import {Axis3D} from "../../../../../Domain/Models/Maths/Axis3D";
 
 const EndEffectorRadius: number = 0.025;
 const DirIndicatorLength: number = 64.0;
@@ -32,9 +33,9 @@ function drawEndEffector(
     ctx.fill();
     
     withLineWidth(DirIndicatorWidth, ctx, () => {
-        drawProjectedLine(ctx, pos, pos.plus(dirX.scale(DirIndicatorLength)), projection, Color.Magenta.brighter(25));
-        drawProjectedLine(ctx, pos, pos.plus(dirY.scale(DirIndicatorLength)), projection, Color.Yellow.brighter(25));
-        drawProjectedLine(ctx, pos, pos.plus(dirZ.scale(DirIndicatorLength)), projection, Color.Cyan.brighter(25));
+        drawProjectedLine(ctx, pos, pos.plus(dirX.scale(DirIndicatorLength)), projection, Axis3D.X.endEffectorColor);
+        drawProjectedLine(ctx, pos, pos.plus(dirY.scale(DirIndicatorLength)), projection, Axis3D.Y.endEffectorColor);
+        drawProjectedLine(ctx, pos, pos.plus(dirZ.scale(DirIndicatorLength)), projection, Axis3D.Z.endEffectorColor);
     })
 }
 

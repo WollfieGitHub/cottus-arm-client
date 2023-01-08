@@ -65,12 +65,20 @@ export default class MoveTool extends ControlTool {
         if (this._deltaParam === undefined 
             || this.lastAxisDirection === undefined 
             || this._deltaMousePos === undefined
-        ) { return; }
+            || this.selectionEquation === undefined
+            || this._currentMousePos === undefined
+        ) { console.log("Boo"); return; }
+        
+        // We can't directly use this._deltaParam because the end effector moves at the same time
+        // contrary to the opposite, so we project the difference on the segment
+        // i.e., we project "prev" and "current" at a same time t instead of two different times t1 and t2
+        // in between of which the segment could have moved
+        const deltaParam = Math.abs(this.selectionEquation.param(this._currentMousePos)
+                - this.selectionEquation.param(this._currentMousePos.minus(this._deltaMousePos)))
+        console.log(deltaParam, this._deltaMousePos.norm());
         
         // Compute if the camera is aligned with the axis or the opposite
-        const deltaPos = Math.abs(this._deltaParam) * 
-            this.size * 
-            Math.sign(this.lastAxisDirection.normalized().dot( this._deltaMousePos.normalized() )); // Direction of movement
+        const deltaPos = deltaParam * this.size * Math.sign(this.lastAxisDirection.dot( this._deltaMousePos )); // Direction of movement
         
         arm.moveEndEffector(this.axis, deltaPos);
     }

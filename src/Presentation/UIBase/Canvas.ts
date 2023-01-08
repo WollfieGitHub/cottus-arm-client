@@ -12,6 +12,11 @@ export default class Canvas {
         this.canvas = canvas;
         this.eventAdapter = new CanvasEventAdapter(this.canvas);
     }
+    
+    /** Remove all the listeners from the canvas, used when the component is unmounted */
+    public removeListeners() {
+        this.eventAdapter.removeListeners();
+    }
 
     /** @return The canvas element */
     public getCanvas(): HTMLCanvasElement {

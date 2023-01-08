@@ -1,6 +1,7 @@
 import {Vector3D} from "../Vector3D";
 import {Ellipse} from "../Shapes/Ellipse";
 import {Vector2D} from "../Vector2D";
+import {enumKeys} from "../../Utils";
 
 export abstract class Projection {
 
@@ -71,7 +72,8 @@ export abstract class Projection {
     }
 }
 
+
 export enum ProjectionType {
-    Orthographic,
-    Perspective
+    Orthographic = 'Orthographic',
+    Perspective ='Perspective'
 }

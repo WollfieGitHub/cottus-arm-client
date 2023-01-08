@@ -32,11 +32,11 @@ export default function useCottusArmViewModel() {
     const canvasRef = useRef<HTMLCanvasElement>(null);
 
     const projectionRef = useRef<Projection>();
-    const { projection } = useCanvasNavigation(canvas, canvasWidth, canvasHeight, dtRef);
+    const { projection, setProjectionType, projectionType } = useCanvasNavigation(canvas, canvasWidth, canvasHeight, dtRef);
     useEffect(() => { projectionRef.current = projection; }, [ projection ])
     
     const { selectedJoint, hoveredJoint} = useJointSelection(canvas, cottusArmRef, projectionRef);
-    const { draw: drawTools } = useControlTools(canvas, cottusArmRef);
+    const { draw: drawTools, editMode, setEditMode } = useControlTools(canvas, cottusArmRef);
 
     // On each redraw, update dt
     const curr = Date.now();
@@ -47,15 +47,16 @@ export default function useCottusArmViewModel() {
     useEffect(() => {
         if (canvasRef.current === null) { return; }
         
-        // TODO CHECK Note to self : Putting this out of the useEffect hook like in the help page
+        // TODO CHECK Note to self : Putting this out of the useEffect hook
         // is a stupid move because it subscribes every time the components renders and
-        // that might be why the page starts freezing after a while
+        // that was why the page starts freezing after a while
         UseCase.subscribe((data) => { 
             setCottusArm(data)
             cottusArmRef.current = data;
         });
         const c = new Canvas(canvasRef.current);
         setCanvas(c)
+        
     }, [])
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -102,5 +103,9 @@ export default function useCottusArmViewModel() {
         return () => { window.cancelAnimationFrame(animationFrameId); }
     }, [canvas, draw]);
     
-    return { cottusArm, canvasWidth, canvasHeight, canvasRef };
+    return {
+        cottusArm, canvasWidth, canvasHeight, canvasRef,
+        projectionType, setProjectionType,
+        editMode, setEditMode
+    };
 }
