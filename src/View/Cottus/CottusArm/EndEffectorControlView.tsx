@@ -1,7 +1,7 @@
 
 // TEMP
 
-import {Box, Button, Card, InputAdornment, TextField, Typography} from "@mui/material";
+import {Box, Button, Card, InputAdornment, SxProps, TextField, Theme, Typography} from "@mui/material";
 import {Axis3D} from "../../../Domain/Models/Maths/Axis3D";
 import React, {ChangeEvent, useState} from "react";
 import {Vector3D} from "../../../Domain/Models/Maths/Vector3D";
@@ -88,7 +88,7 @@ const ArmAngleSpecification =  ({setArmAngle, armAngle} : {setArmAngle: (armAngl
     </div>)
 }
 
-const SpecificationView = () => {
+const EndEffectorControlView = ({sx}: {sx?: SxProps<Theme>}) => {
 
     const [ pos, setPos ] = useState(DefaultPos);
     const [ rot, setRot ] = useState(DefaultOrientation);
@@ -107,7 +107,10 @@ const SpecificationView = () => {
         }).then();
     }
 
-    return (<Card sx={{margin: '5px', padding: '10px'}}>
+    return (<Card sx={sx}>
+        <Typography variant={'h4'} align={'center'}marginY={2}>
+            End Effector Control
+        </Typography>
         <PositionSpecification setPos={setPos} pos={pos} />
         <RotationSpecification setRot={setRot} rot={rot} />
         <ArmAngleSpecification setArmAngle={setArmAngle} armAngle={armAngle} />
@@ -115,4 +118,4 @@ const SpecificationView = () => {
     </Card>)
 }
 
-export default SpecificationView;
+export default EndEffectorControlView;

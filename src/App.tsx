@@ -2,6 +2,7 @@ import React from 'react';
 import "./App.scss";
 import CottusArmView from "./View/Cottus/CottusArm/CottusArmView";
 import {createTheme, ThemeProvider, Typography} from "@mui/material";
+import Dashboard from "./View/Cottus/Dashboard";
 
 const theme = createTheme({
     palette: {
@@ -29,7 +30,7 @@ function App() {
                     Cottus Arm Controller
                 </Typography>
             </div>
-            <CottusArmView />   
+            <Dashboard />
         </ThemeProvider>
     </div>
   );

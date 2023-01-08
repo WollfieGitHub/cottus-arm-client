@@ -1,4 +1,4 @@
-import {ArmAnimationAPIEntity, fromObject as fromAnim,} from "./ArmAnimationAPIEntity";
+import {ArmAnimationAPIEntity, fromApi as fromAnim,} from "./ArmAnimationAPIEntity";
 import {fromObject as fromVector, Vector3DAPIEntity,} from "../Vector3DAPIEntity";
 import {LineToAnimation} from "../../../../../Domain/Models/Animation/LineToAnimation";
 

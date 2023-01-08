@@ -21,8 +21,6 @@ const createProjection = (
     const rotVector: Vector3D = new Vector3D(0,0, -rotZ-Math.PI/4);
     const posVector: Vector3D = new Vector3D(400,400, 500).scale(Math.max(zoom, 0.001));
     
-    console.log(posVector.rotatedAtOriginAround(Axis3D.Z.id, -rotVector.z));
-    
     switch (type) {
         case ProjectionType.Orthographic: {
             const orthographicZoomMultiplier: number = 1.5

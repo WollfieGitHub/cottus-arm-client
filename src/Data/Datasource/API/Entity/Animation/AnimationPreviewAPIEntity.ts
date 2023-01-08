@@ -1,4 +1,8 @@
 import {Vector3DAPIEntity} from "../Vector3DAPIEntity";
+import {ArmAnimationAPIEntity} from "./ArmAnimationAPIEntity";
+import {AnimationPreview, AnimationPreviewPoint} from "../../../../../Domain/Models/Animation/AnimationPreview";
+import {Vector3D} from "../../../../../Domain/Models/Maths/Vector3D";
+import {fromApi as fromApiVector} from "../Vector3DAPIEntity";
 
 /**
  * On hover of an animation, show a curve of the animation with sampled points. The hue of the color color
@@ -14,4 +18,19 @@ export interface AnimationPreviewPointAPIEntity {
     position: Vector3DAPIEntity,
     direction: Vector3DAPIEntity, // Pointing towards the end effector's local Z
     time: number,
+}
+
+export function fromApi(preview: AnimationPreviewAPIEntity): AnimationPreview {
+    return {
+        points: preview.points.map(point => fromApiPoint(point)),
+        duration: preview.duration,
+    }
+}
+
+function fromApiPoint(previewPoint: AnimationPreviewPointAPIEntity): AnimationPreviewPoint {
+    return {
+        position: fromApiVector(previewPoint.position),
+        direction: fromApiVector(previewPoint.direction),
+        time: previewPoint.time,
+    }
 }

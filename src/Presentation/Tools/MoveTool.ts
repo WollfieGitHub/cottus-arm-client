@@ -75,7 +75,6 @@ export default class MoveTool extends ControlTool {
         // in between of which the segment could have moved
         const deltaParam = Math.abs(this.selectionEquation.param(this._currentMousePos)
                 - this.selectionEquation.param(this._currentMousePos.minus(this._deltaMousePos)))
-        console.log(deltaParam, this._deltaMousePos.norm());
         
         // Compute if the camera is aligned with the axis or the opposite
         const deltaPos = deltaParam * this.size * Math.sign(this.lastAxisDirection.dot( this._deltaMousePos )); // Direction of movement
