@@ -70,8 +70,7 @@ export default class MoveTool extends ControlTool {
         // Compute if the camera is aligned with the axis or the opposite
         const deltaPos = Math.abs(this._deltaParam) * 
             this.size * 
-            Math.sin(this.lastAxisDirection.normalized().dot( this._deltaMousePos.normalized() )); // Direction of movement
-        console.log()
+            Math.sign(this.lastAxisDirection.normalized().dot( this._deltaMousePos.normalized() )); // Direction of movement
         
         arm.moveEndEffector(this.axis, deltaPos);
     }

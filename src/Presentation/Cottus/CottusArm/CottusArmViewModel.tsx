@@ -88,7 +88,7 @@ export default function useCottusArmViewModel() {
         
         context.setTransform(
             canvasWidth/2, 0,
-            0, canvasHeight/2,
+            0, -canvasHeight/2,
             canvasWidth/2, canvasHeight/2);
 
         let animationFrameId: number;

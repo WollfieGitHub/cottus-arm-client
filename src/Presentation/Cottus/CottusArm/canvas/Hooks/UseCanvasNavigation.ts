@@ -31,7 +31,7 @@ const createProjection = (
 
             return new OrthographicProjection(
                 rightVector.rotatedAtOriginUsing(rotVector),
-                upVector.scale(-1).rotatedAtOriginUsing(rotVector),
+                upVector.scale(1).rotatedAtOriginUsing(rotVector),
                 canvasWidth*orthographicZoomMultiplier*zoom,
                 canvasHeight*orthographicZoomMultiplier*zoom
             );

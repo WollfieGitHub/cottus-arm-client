@@ -60,12 +60,11 @@ const useControlTools = (
     const onMouseMoved = (evt: CanvasMoveEvent) => {
         // If any tool is selected, update it
         let selectedTool: ControlTool | undefined;
-        if (
-            (selectedTool = tools.find(_ => _.selected)) !== undefined && arm.current !== undefined
-        ) { 
+        if ((selectedTool = tools.find(_ => _.selected)) !== undefined && arm.current !== undefined) { 
             selectedTool.onSelectUpdate(evt.pos, arm.current);
             return; 
         }
+        tools.forEach(tool => tool.updatePos(evt.pos))
         
         // Otherwise, find a tool which is hovered
         const candidates = tools

@@ -45,6 +45,10 @@ export abstract class ControlTool implements CanvasTool{
         
     }
     
+    public updatePos(mousePos: Vector2D) {
+        this._currentMousePos = mousePos;
+    }
+    
     public onSelectUpdate(mousePos: Vector2D, arm: CottusArm) {
         // Compute delta only if there is enough info to compute it
         if (this._currentMousePos !== undefined) {

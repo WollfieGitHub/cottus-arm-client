@@ -3,6 +3,8 @@ import {Vector2D} from "./Vector2D";
 import {BASE_PRECISION} from "../../../Constants";
 import {Ellipse} from "./Shapes/Ellipse";
 import {Axis3D} from "./Axis3D";
+import {newtonRhapson} from "./MathUtils";
+import {doesNotMatch} from "assert";
 
 export type Equation = (v: Vector2D) => {proj: Vector2D, param: number, distance: number};
 export default class ProjectionEquation {
@@ -47,24 +49,57 @@ export default class ProjectionEquation {
      * @param ellipse The ellipse object
      */
     static fromEllipse(ellipse: Ellipse): ProjectionEquation {
-        const { center, radiusX, radiusY, rotation } = ellipse;
+        const { center, radiusX: rX, radiusY: rY, rotation } = ellipse;
+        
+        const r: number = rX > rY ? rX : rY;
+        const alpha: number = rX/r;
+        const beta: number = rY/r;
         
         return new ProjectionEquation((v) => {
-            // Translate and rotate ellipse at origin
-            v = v.minus(center).rotatedAtOriginAround(Axis3D.Z.id, -rotation);
-            const theta: number = Math.atan2(v.y, v.x);
-            const cosTheta = Math.cos(theta);
-            const sinTheta = Math.sin(theta);
-            const proj: Vector2D = new Vector2D(radiusX*cosTheta, radiusY*sinTheta)
-                .rotatedAtOriginAround(Axis3D.Z.id, rotation)
-                .plus(center);
-
-            const a: number = v.x*Math.cos(theta) + v.y*Math.sin(theta);
-            const b: number = v.x*Math.sin(theta) - v.y*Math.cos(theta);
-
-            const distance: number = (a*a)/(radiusX*radiusX) + (b*b)/(radiusY*radiusY) - 1 - 0.25;
+            const vOrigin: Vector2D = v.minus(center).rotatedAtOriginAround(Axis3D.Z.id, -rotation)
+            // Avoid singularities when close to origin by placing the point out of the ellipse
+                .normalized().scale(2*r);
+            let { x: x0,y: y0 } = vOrigin;
             
-            return { proj: proj, param: theta, distance };
+            // The method is way more accurate in the first quadrant
+            let [ x, y ] = [ Math.abs(x0), Math.abs(y0) ];
+            
+            const f = (theta: number) => {
+                const cTheta = Math.cos(theta);
+                const sTheta = Math.sin(theta);
+                
+                return (alpha*alpha - beta*beta) * r * cTheta * sTheta
+                    - x * alpha * sTheta
+                    + y * beta * cTheta;
+            };
+            
+            const df = (theta: number) => {
+                const cTheta = Math.cos(theta);
+                const sTheta = Math.sin(theta);
+                
+                return (alpha*alpha - beta*beta) * r * (cTheta*cTheta - sTheta*sTheta)
+                    - x * alpha * cTheta
+                    - y * beta * sTheta;
+            };
+            
+            // Width of the canvas / 4096 points
+            const maxError: number = 2 / 8192;
+            // Initial Guess
+            const initialGuess = Math.atan2(alpha*y, beta*x);
+            
+            let theta = newtonRhapson(f, df, initialGuess, maxError, 1000);
+            
+            // Correct for the quadrant change
+            if (x0 < 0 && y0 > 0) { theta = Math.PI - theta; }
+            else if (x0 < 0 && y0 < 0) { theta = Math.PI + theta; }
+            else if (x0 > 0 && y0 < 0) { theta = - theta}
+            
+            const vProj: Vector2D = new Vector2D(
+                rX * Math.cos(theta),
+                rY * Math.sin(theta),
+            ).rotatedAtOriginAround(Axis3D.Z.id, rotation).plus(center);
+            
+            return { proj: vProj, param: theta, distance: v.minus(vProj).norm() };
         });
     }
 

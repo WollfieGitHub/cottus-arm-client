@@ -8,6 +8,7 @@ import {ControlTool} from "./ControlTool";
 import ProjectionEquation from "../../Domain/Models/Maths/ProjectionEquation";
 import {Ellipse} from "../../Domain/Models/Maths/Shapes/Ellipse";
 import {normalizedAngle} from "../../Domain/Models/Maths/MathUtils";
+import Color from "../Utils/Color";
 
 const rotateToolSize = 100;
 
@@ -50,7 +51,7 @@ export default class RotateTool extends ControlTool{
                 const yAxis = v1.normalized().scale(rotateToolSize);
                 
                 // Record each axis for the ellipse
-                this._lastEllipseAxis = xAxis.cross(yAxis).normalized();
+                this._lastEllipseAxis = xAxis.cross(yAxis);
                 this._lastProjection = projection;
                 
                 const ell: Ellipse = projection.projectEllipse(
@@ -83,9 +84,10 @@ export default class RotateTool extends ControlTool{
         if (this.selectionEquation === undefined || this._lastProjection === undefined) { return; }
 
         const deltaAngle = // Compute if the camera is aligned with the axis or the opposite
-            -this._lastEllipseAxis.dot(this._lastProjection.cameraDir())
+            -Math.sign(this._lastEllipseAxis.normalized().dot(this._lastProjection.cameraDir().normalized()))
             * normalizedAngle(this._deltaParam);
 
+        console.log(deltaAngle);
         
         if (this.currentJoint.isEndEffector) { arm.rotateEndEffector(this.axis, deltaAngle); }
         else { arm.rotateJoint( this.currentJoint.index, deltaAngle ); }
