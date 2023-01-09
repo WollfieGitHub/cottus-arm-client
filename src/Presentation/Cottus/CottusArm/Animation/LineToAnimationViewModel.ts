@@ -6,14 +6,14 @@ export const useViewModel = () => {
     const [ animation, setAnimation ] = useState<LineToAnimation>();
     
     const [ time, setTime ] = useState<number>()
-    const [ relative, setRelative ] = useState<boolean>()
-    const [ position, setPosition ] = useState<Vector3D>()
+    const [ relative, setRelative ] = useState<boolean>(false)
+    const [ position, setPosition ] = useState<Vector3D>(Vector3D.Zero)
     
     // Update the animation
     useEffect(() => {
         if (time !== undefined && relative !== undefined && position !== undefined)
-        setAnimation({ time, relative, position })
+        setAnimation(/* TODO */ undefined)
     }, [time, relative, position])
     
-    return { animation, setTime, setRelative, setPosition };
+    return { animation, setTime, setRelative, setPosition, position };
 }

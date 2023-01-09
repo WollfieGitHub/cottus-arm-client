@@ -3,6 +3,7 @@ import AnimationDatasource from "../Datasource/AnimationDatasource";
 import {ArmAnimationAPIEntity} from "../Datasource/API/Entity/Animation/ArmAnimationAPIEntity";
 import {ArmAnimation} from "../../Domain/Models/Animation/ArmAnimation";
 import {AnimationPreview} from "../../Domain/Models/Animation/AnimationPreview";
+import {AnimationEntry} from "../../Domain/Models/Animation/AnimationEntry";
 
 export class AnimationRepositoryImpl implements AnimationRepository {
     id: string = "animation-repository-impl"
@@ -13,7 +14,7 @@ export class AnimationRepositoryImpl implements AnimationRepository {
         this.datasource = datasource;
     }
 
-    async listAll(): Promise<ArmAnimationAPIEntity[]> {
+    async listAll(): Promise<AnimationEntry[]> {
         return this.datasource.listAll();
     }
 

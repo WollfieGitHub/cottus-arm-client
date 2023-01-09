@@ -1,7 +1,8 @@
 import { Box } from "@mui/material";
 import EndEffectorControlView from "./CottusArm/EndEffectorControlView";
 import CottusArmView from "./CottusArm/CottusArmView";
-import AnimationControlView from "./CottusArm/AnimationControlView";
+import AnimationPlayerView from "./Animation/AnimationPlayerView";
+import AnimationControlView from "./Animation/AnimationControlView";
 
 const Dashboard = () => {
     

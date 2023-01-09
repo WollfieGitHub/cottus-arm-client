@@ -1,6 +1,7 @@
 import AnimationRepository from "../../Repository/AnimationRepository";
 import {ArmAnimation} from "../../Models/Animation/ArmAnimation";
 import {AnimationPreview} from "../../Models/Animation/AnimationPreview";
+import {AnimationEntry} from "../../Models/Animation/AnimationEntry";
 
 export class ListAllAnimationsUseCase {
     id: string = "animation-use-case";
@@ -11,7 +12,7 @@ export class ListAllAnimationsUseCase {
         this.animationRepository = animationRepository;
     }
 
-    async invoke(): Promise<ArmAnimation[]> {
+    async invoke(): Promise<AnimationEntry[]> {
         return this.animationRepository.listAll();
     }
 }

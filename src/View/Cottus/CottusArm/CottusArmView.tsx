@@ -1,5 +1,5 @@
 import useCottusArmViewModel from "../../../Presentation/Cottus/CottusArm/CottusArmViewModel";
-import {Box, Card} from "@mui/material";
+import {Box, Card, useTheme} from "@mui/material";
 import EndEffectorControlView from "./EndEffectorControlView";
 import ChangeProjectionButton from "../../../Presentation/Cottus/CottusArm/canvas/Buttons/ChangeProjectionButton";
 import ChangeEditModeButton from "../../../Presentation/Cottus/CottusArm/canvas/Buttons/ChangeEditModeButton";
@@ -10,14 +10,18 @@ const CottusArmView = () => {
         projectionType, setProjectionType,
         editMode, setEditMode
     } = useCottusArmViewModel();
+    
+    const theme = useTheme();
 
     return (
         <Card sx={{
             display: 'flex', padding: 2, width: "fit-content", margin: "0 20 0 20",
             flexDirection: 'column'
         }}>
-            <div className={"canvas"}>
-                <canvas width={canvasWidth} height={canvasHeight} ref={canvasRef} />
+            <div className={"canvas"} >
+                <canvas width={canvasWidth} height={canvasHeight} ref={canvasRef}
+                        style={{borderColor: theme.palette.secondary.main, borderWidth: '0.25px', borderStyle: 'solid'}}
+                />
             </div>
             <div className={"canvas-buttons"} style={{
                 display: 'flex', flexDirection: 'row', alignItems: 'center', justifyContent: 'center',

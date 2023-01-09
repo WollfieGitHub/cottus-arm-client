@@ -6,6 +6,7 @@ import {AnimationRepositoryImpl} from "../../../../Data/Repository/AnimationRepo
 import AnimationDatasourceAPIImpl from "../../../../Data/Datasource/API/AnimationDatasourceAPIImpl";
 import {AnimationPreviewUseCase} from "../../../../Domain/UseCases/Animation/PreviewAnimation";
 import {AnimationPreview} from "../../../../Domain/Models/Animation/AnimationPreview";
+import {AnimationEntry} from "../../../../Domain/Models/Animation/AnimationEntry";
 
 const animationRepository: AnimationRepository = new AnimationRepositoryImpl(new AnimationDatasourceAPIImpl());
 
@@ -14,7 +15,7 @@ const PreviewUseCase = new AnimationPreviewUseCase(animationRepository);
 
 export function useViewModel() {
     
-    const [ animations, setAnimations ] = useState<ArmAnimation[]>([]);
+    const [ animations, setAnimations ] = useState<AnimationEntry[]>([]);
     const [ currentPreview, setCurrentPreview ] = useState<AnimationPreview|null>(null);
     
     async function getAnimationList(): Promise<void> { setAnimations(await ListAllUseCase.invoke()); }

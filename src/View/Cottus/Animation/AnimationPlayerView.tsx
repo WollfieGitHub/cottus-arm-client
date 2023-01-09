@@ -1,50 +1,47 @@
 import {Card, SxProps, Theme, ToggleButton, ToggleButtonGroup, Typography} from "@mui/material";
 import React, {useEffect, useState} from "react";
 import {useViewModel} from "../../../Presentation/Cottus/CottusArm/Animation/AnimationControlViewModel";
-import {ArmAnimation} from "../../../Domain/Models/Animation/ArmAnimation";
+import {AnimationEntry} from "../../../Domain/Models/Animation/AnimationEntry";
 
-const AnimationControlView = ({sx}: {sx?: SxProps<Theme>}) => {
+const AnimationPlayerView = () => {
     
     const { 
         animations, getAnimationList, 
         previewAnimation, currentPreview, hidePreview
     } = useViewModel();
     
-    const [ selectedAnimation, setSelectedAnimation ] = useState<ArmAnimation>();
+    const [ selectedAnimation, setSelectedAnimation ] = useState<AnimationEntry>();
     
     useEffect(() => {
         getAnimationList().then();
     }, [])
     
-    const getByName = (animationName: string): ArmAnimation|undefined => animations.find(_ => _.name === animationName);
+    const getByName = (animationName: string): AnimationEntry|undefined => animations.find(_ => _.name === animationName);
 
     const handleChange = (event: React.MouseEvent<HTMLElement>, newAnimationName: string) => {
         setSelectedAnimation(getByName(newAnimationName));
     };
     
-    const handleHoverBegin = (animation: ArmAnimation) => { previewAnimation(animation).then(); }
+    const handleHoverBegin = (animation: AnimationEntry) => { previewAnimation(animation.animation).then(); }
     const handleHoverEnd = () => { hidePreview(); }
     
     return (
-        <Card sx={sx}>
-            <Typography variant={'h4'} align={'center'} marginY={2}>
-                Animation Control
-            </Typography>
-            <ToggleButtonGroup 
-                color={'primary'} 
+        <div className={'animation-player'}>
+            <ToggleButtonGroup
+                color={'primary'}
                 value={selectedAnimation?.name}
                 exclusive onChange={handleChange}
                 orientation={'vertical'}
             >
                 { animations.map(animation => AnimationView(animation, handleHoverBegin, handleHoverEnd)) }
             </ToggleButtonGroup>
-        </Card>
+        </div>
     );
 }
 
 const AnimationView = (
-    animation: ArmAnimation, 
-    onHoverBegin: (animation: ArmAnimation) => void,
+    animation: AnimationEntry, 
+    onHoverBegin: (animation: AnimationEntry) => void,
     onHoverEnd: () => void
 ): JSX.Element => {
     
@@ -59,4 +56,4 @@ const AnimationView = (
     );
 }
 
-export default AnimationControlView;
+export default AnimationPlayerView;
