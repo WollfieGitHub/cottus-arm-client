@@ -1,17 +1,24 @@
 import {Box, Button, Divider, Stack, Tab, Tabs, TextField, Tooltip, Typography} from "@mui/material";
 import {Circle, Undo} from "@mui/icons-material";
-import React, {useState} from "react";
+import React, {MutableRefObject, useState} from "react";
 import PrebuiltAnimationSelectorView from "./PrebuiltAnimationSelectorView";
 import AnimationTimelineView from "./AnimationTimelineView";
 import AnimationPlayerView from "./AnimationPlayerView";
+import useViewModel from "../../../Presentation/Cottus/CottusArm/Animation/AnimationRecorderViewModel";
+import {CottusArm} from "../../../Domain/Models/CottusArm";
 
 const centeredRowFlexbox: any = {display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-evenly"};
 const centeredColumnFlexbox: any = {display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "space-evenly"};
 
-const AnimationRecorderView = () => {
+const AnimationRecorderView = (props: {arm: MutableRefObject<CottusArm|undefined>}) => {
     
-    const [ recording, setRecording ] = useState(false);
-    const [ name, setName ] = useState('');
+    const { 
+        recording, setRecording,
+        name, setName,
+        undoLast, remove, captureFrame,
+        currentFramePosition, addAnimation,
+        setPreview
+    } = useViewModel(props.arm);
 
     const [tabValue, setTabValue] = React.useState(0);
 
@@ -23,27 +30,22 @@ const AnimationRecorderView = () => {
         <div className={'animation-recorder'} style={{}}>
             <div style={{width: '80%', margin: '0 auto 0 auto'}}>
                 <Stack direction={'column'} spacing={0.5}
-                       sx={{margin: 1}} justifyContent={'space-evenly'}
-                >
-                    
-                        <TextField onChange={e => setName(e.target.value)}
-                                   id="outlined-basic" label="Animation Name" variant="outlined"
-                                   fullWidth={true} sx={{margin: '10px 0 10px 0'}}
-                                   disabled={recording}
-                        />
-                        <Button variant={'contained'} color={(!recording ? 'primary' : 'error')}
-                                onClick={() => setRecording(!recording)}
-                                sx={{margin: '0 0 10px 0'}} disabled={name === ''}
-                        >
-                            {!recording ? 'Create New' : 'Cancel Creation'}
-                        </Button>
-                    
+                       sx={{margin: 1}} justifyContent={'space-evenly'}>
+                    <TextField onChange={e => setName(e.target.value)}
+                               id="outlined-basic" label="Animation Name" variant="outlined"
+                               fullWidth={true} sx={{margin: '10px 0 10px 0'}}
+                               disabled={recording}/>
+                    <Button variant={'contained'} color={(!recording ? 'primary' : 'error')}
+                            onClick={() => setRecording(!recording)}
+                            sx={{margin: '0 0 10px 0'}} disabled={name === ''}>
+                        {!recording ? 'Create New' : 'Cancel Creation'}
+                    </Button>
                 </Stack>
             </div>
             <Divider variant={'middle'}/>
             <Stack direction={'row'} spacing={1} justifyContent={'center'} alignItems={'center'}>
-                <UndoButton recording={recording}/>
-                <CaptureCurrentFrameButton recording={recording}/>
+                <UndoButton recording={recording} undo={undoLast}/>
+                <CaptureCurrentFrameButton recording={recording} capture={captureFrame} />
             </Stack>
             <div className={'animation-creation-tabs'}>
                 <Stack sx={{ borderBottom: 1, borderColor: 'divider', width: '90%'}} >
@@ -59,7 +61,8 @@ const AnimationRecorderView = () => {
                 </Stack>
                 <TabPanel value={tabValue} index={0}>
                     <div className={'prebuilt-animation'} style={{...centeredColumnFlexbox}}>
-                        <PrebuiltAnimationSelectorView recording={recording}/>
+                        <PrebuiltAnimationSelectorView recording={recording} position={currentFramePosition}
+                            setAnimation={setPreview}/>
                     </div>
                 </TabPanel>
                 <TabPanel value={tabValue} index={1}>
@@ -91,7 +94,10 @@ const TabPanel = (props: TabPanelProps) => {
     );
 }
 
-const UndoButton = (props: { recording: boolean }) => {
+const UndoButton = (props: {
+    recording: boolean,
+    undo: () => void
+}) => {
     return (
         <Tooltip title={
             <React.Fragment>
@@ -99,15 +105,21 @@ const UndoButton = (props: { recording: boolean }) => {
                 {"Undo either the last frame capture or last animation added"}
             </React.Fragment>
         }>
-            <Button disabled={!props.recording} variant={"outlined"} startIcon={<Undo color={"secondary"}/>}>
+            <span>
+                <Button disabled={!props.recording} variant={"outlined"} startIcon={<Undo color={"secondary"}/>}
+                        onClick={props.undo}>
                 Undo
             </Button>
+            </span>
         </Tooltip>);
 }
 
 
 
-const CaptureCurrentFrameButton = (props: { recording: boolean }) => {
+const CaptureCurrentFrameButton = (props: { 
+    recording: boolean,
+    capture: () => void
+}) => {
     return <div className={"capture-frame-btn"}
                 style={{...centeredRowFlexbox, padding: '10px 0 10px 0'}}>
         <Tooltip title={
@@ -117,10 +129,12 @@ const CaptureCurrentFrameButton = (props: { recording: boolean }) => {
                     " of the end effector"}
             </React.Fragment>
         }>
-            <Button variant={"outlined"} startIcon={<Circle color={"error"}/>}
-                    disabled={!props.recording}>
+            <span>
+                <Button variant={"outlined"} startIcon={<Circle color={"error"}/>}
+                        disabled={!props.recording} onClick={props.capture}>
                 Capture Frame
             </Button>
+            </span>
         </Tooltip>
     </div>;
 }

@@ -8,17 +8,17 @@ import {withLineWidth, withOpacity} from "../../../../Utils/CanvasUtil";
 const articulationRadius: number = 0.025;
 
 export function drawArm(
-    ctx: CanvasRenderingContext2D,
-    arm: CottusArm|undefined,
-    base: Projection,
-    hovered: string|undefined,
-    selected: string|undefined
+    ctx: CanvasRenderingContext2D, arm: CottusArm|undefined,
+    base: Projection, driven: boolean,
+    hovered?: string, selected?: string
 ) {
     if (arm === undefined) { return; }
     
+    const opacity = driven ? 0.25 : 1;
+    
     withLineWidth(16*1.5, ctx, () => {
         arm.joints.forEach(joint => {
-            withOpacity(0.5, ctx, () => {
+            withOpacity(opacity/2, ctx, () => {
                 drawJoint(
                     ctx, joint.name,
                     joint.transform.origin.scaleFrom(new Vector3D(1, 1, 0)),
@@ -28,7 +28,7 @@ export function drawArm(
             });
             
             // Draw actual joint
-            withOpacity(1.0, ctx, () => {
+            withOpacity(opacity, ctx, () => {
                 drawJoint(
                     ctx, joint.name, 
                     joint.transform.origin,

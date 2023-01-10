@@ -14,6 +14,7 @@ export default class AnimationDatasourceAPIImpl implements AnimationDatasource {
    
     async listAll(): Promise<AnimationEntry[]> {
         const response = await typedFetch<AnimationEntryApiEntity[]>('/api/arm-animation/list-all');
+        console.log(response, typeof response);
         const data = await response.json();
         return data.map(datum => fromApiEntry(datum));
     }

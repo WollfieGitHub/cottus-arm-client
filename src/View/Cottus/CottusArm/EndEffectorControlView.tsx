@@ -83,7 +83,7 @@ const EndEffectorControlView = ({sx}: {sx?: SxProps<Theme>}) => {
         <Typography variant={'h4'} align={'center'} marginY={2}>
             End Effector Control
         </Typography>
-        <PositionSpecificationView setPos={setPos} pos={pos} defaultPos={DefaultPos} />
+        <PositionSpecificationView setPos={setPos} pos={pos} />
         <RotationSpecification setRot={setRot} rot={rot} />
         <ArmAngleSpecification setArmAngle={setArmAngle} armAngle={armAngle} />
         <Button variant={"contained"} onClick={handleClick}>Send</Button>

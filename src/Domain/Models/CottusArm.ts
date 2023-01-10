@@ -1,9 +1,6 @@
 import {Joint} from "./Joint";
 import {Axis3D} from "./Maths/Axis3D";
 import {fromObject as fromVector} from "../../Data/Datasource/API/Entity/Vector3DAPIEntity";
-import {
-    AbsoluteEndEffectorSpecificationAPIEntity
-} from "../../Data/Datasource/API/Entity/Specification/AbsoluteEndEffectorSpecificationAPIEntity";
 import {Vector3D} from "./Maths/Vector3D";
 import {
     RelativeEndEffectorSpecificationAPIEntity
@@ -13,11 +10,13 @@ export class CottusArm {
     public readonly joints: Joint[];
     public readonly nbJoints: number;
     public readonly endEffector: Joint;
+    public readonly ready: boolean
     
-    constructor(joints: Joint[], nbJoints: number, endEffector: Joint) {
+    constructor(joints: Joint[], nbJoints: number, endEffector: Joint, ready: boolean) {
         this.joints = joints;
         this.nbJoints = nbJoints;
         this.endEffector = endEffector;
+        this.ready = ready;
     }
 
     /**
@@ -57,7 +56,7 @@ export class CottusArm {
     /**
      * Rotate the end effector around the given axis by the specified amount
      * @param axis The axis around which to rotate the end effector
-     * @param amount The amount by which to rotate the end effector
+     * @param deltaAngle The amount by which to rotate the end effector
      */
     rotateEndEffector(axis: Axis3D, deltaAngle: number) {
         if (Number.isNaN(deltaAngle)) { return; }

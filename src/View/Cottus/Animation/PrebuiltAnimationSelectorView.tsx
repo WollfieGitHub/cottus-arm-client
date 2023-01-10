@@ -14,8 +14,14 @@ import {LineToAnimationView} from "./Prebuilt/LineToAnimationView";
 import {ContentCut} from "@mui/icons-material";
 import {BezierToAnimationView} from "./Prebuilt/BezierToAnimationView";
 import WaitAnimationView from "./Prebuilt/WaitAnimationView";
+import {Vector3D} from "../../../Domain/Models/Maths/Vector3D";
+import {ArmAnimation} from "../../../Domain/Models/Animation/ArmAnimation";
 
-const PrebuiltAnimationSelectorView = (props: {recording: boolean}) => {
+const PrebuiltAnimationSelectorView = (props: {
+    recording: boolean,
+    position: Vector3D|undefined // Position to fill the animation with
+    setAnimation: (animation: ArmAnimation) => void
+}) => {
 
     const [prebuiltAnimationIndex, setPrebuiltAnimationIndex] = useState<number|undefined>(undefined);
 
@@ -28,8 +34,10 @@ const PrebuiltAnimationSelectorView = (props: {recording: boolean}) => {
     };
     
     const getPrebuiltAnimationBuilder = (): JSX.Element|undefined => {
+        if (prebuiltAnimationIndex === undefined) { return undefined; }
+        
         switch (prebuiltAnimationIndex) {
-            case 0: { return (<LineToAnimationView />); }
+            case 0: { return (<LineToAnimationView position={props.position} setAnimation={props.setAnimation}/>); }
             case 1: { return (<BezierToAnimationView />); }
             case 2: { return (<BezierToAnimationView />); }
             case 3: { return (<WaitAnimationView />); }
@@ -52,7 +60,7 @@ const PrebuiltAnimationSelectorView = (props: {recording: boolean}) => {
                         variant={'standard'}
                         labelId="demo-simple-select-label"
                         id="demo-simple-select"
-                        value={`${prebuiltAnimationIndex}`}
+                        value={`${prebuiltAnimationIndex === undefined ? '' : prebuiltAnimationIndex}`}
                         label="Prebuilt Animation"
                         onChange={handleChange}
                     >

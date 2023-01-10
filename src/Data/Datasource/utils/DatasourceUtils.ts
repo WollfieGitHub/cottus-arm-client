@@ -3,7 +3,7 @@
 }
 
 export function typedFetch<T>(url: RequestInfo, init?: RequestInit): Promise<TypedResponse<T>> {
-    return fetch(url, init).then(data => data.json());
+    return fetch(url, init);
 }
 
 export function typedPost<T, R>(url: RequestInfo, obj: T): Promise<TypedResponse<R>> {

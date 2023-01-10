@@ -3,20 +3,32 @@ import {Box, Card, useTheme} from "@mui/material";
 import EndEffectorControlView from "./EndEffectorControlView";
 import ChangeProjectionButton from "../../../Presentation/Cottus/CottusArm/canvas/Buttons/ChangeProjectionButton";
 import ChangeEditModeButton from "../../../Presentation/Cottus/CottusArm/canvas/Buttons/ChangeEditModeButton";
+import {MutableRefObject, useEffect} from "react";
+import CottusArmDatasource from "../../../Data/Datasource/CottusArmDatasource";
+import {CottusArm} from "../../../Domain/Models/CottusArm";
 
-const CottusArmView = () => {
+const CottusArmView = (props: {
+    setArmReady: (ready: boolean|undefined) => void, 
+    visibility: string,
+    datasource: CottusArmDatasource,
+    armRef: MutableRefObject<CottusArm|undefined>
+}) => {
     const { 
         canvasWidth, canvasHeight, canvasRef,
         projectionType, setProjectionType,
         editMode, setEditMode
-    } = useCottusArmViewModel();
+    } = useCottusArmViewModel(props.datasource, props.armRef);
     
     const theme = useTheme();
+    
+    useEffect(() => {
+        props.setArmReady(props.armRef.current === undefined ? undefined : props.armRef.current.ready);
+    }, [props, props.armRef.current])
 
     return (
         <Card sx={{
             display: 'flex', padding: 2, width: "fit-content", margin: "0 20 0 20",
-            flexDirection: 'column'
+            flexDirection: 'column', visibility: props.visibility
         }}>
             <div className={"canvas"} >
                 <canvas width={canvasWidth} height={canvasHeight} ref={canvasRef}

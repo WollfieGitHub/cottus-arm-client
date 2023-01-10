@@ -1,9 +1,10 @@
 import {Box, Card, SxProps, Tab, Tabs, Theme, Typography} from "@mui/material";
-import React from "react";
+import React, {MutableRefObject} from "react";
 import AnimationPlayerView from "./AnimationPlayerView";
 import AnimationRecorderView from "./AnimationRecorderView";
+import {CottusArm} from "../../../Domain/Models/CottusArm";
 
-const AnimationControlView = ({sx}: {sx?: SxProps<Theme>}) => {
+const AnimationControlView = ({sx, armRef}: {sx?: SxProps<Theme>, armRef: MutableRefObject<CottusArm|undefined>}) => {
 
     const [value, setValue] = React.useState(0);
 
@@ -17,22 +18,14 @@ const AnimationControlView = ({sx}: {sx?: SxProps<Theme>}) => {
                 Animation Control
             </Typography>
             <Box sx={{ borderBottom: 1, borderColor: 'divider' }}>
-                <Tabs value={value} onChange={handleChange}
-                      aria-label="basic tabs example"
-                      variant={'fullWidth'}
-                      textColor={'secondary'}
-                      indicatorColor={'primary'}
-                >
+                <Tabs value={value} onChange={handleChange} aria-label="basic tabs example" variant={'fullWidth'}
+                      textColor={'secondary'} indicatorColor={'primary'}>
                     <Tab label="Play" />
                     <Tab label="Record" />
                 </Tabs>
             </Box>
-            <TabPanel value={value} index={0}>
-                <AnimationPlayerView />
-            </TabPanel>
-            <TabPanel value={value} index={1}>
-                <AnimationRecorderView />
-            </TabPanel>
+            <TabPanel value={value} index={0}> <AnimationPlayerView />   </TabPanel> 
+            <TabPanel value={value} index={1}> <AnimationRecorderView arm={armRef} /> </TabPanel>
         </Card>
     );
 }
@@ -51,9 +44,7 @@ const TabPanel = (props: TabPanelProps) => {
             {...other}
         >
             {value === index && (
-                <Box sx={{ p: 1 }}>
-                    <Typography>{children}</Typography>
-                </Box>
+                <Box sx={{ p: 1 }}>{ children }</Box>
             )}
         </div>
     );

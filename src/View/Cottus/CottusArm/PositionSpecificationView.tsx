@@ -3,10 +3,11 @@ import {Axis3D} from "../../../Domain/Models/Maths/Axis3D";
 import React, {ChangeEvent} from "react";
 import {Box, InputAdornment, TextField, Typography} from "@mui/material";
 
-export const PositionSpecificationView = ({setPos, pos, defaultPos}: { setPos: (rot: Vector3D) => void, pos: Vector3D, defaultPos: Vector3D }) => {
+export const PositionSpecificationView = ({setPos, pos}: { setPos: (rot: Vector3D) => void, pos: Vector3D }) => {
 
     const handleChange = (axis: Axis3D, event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         setPos(pos.withCoordinate(axis.id, parseInt(event.target.value)));
+        console.log("Change")
     }
 
     return (<div>
@@ -15,17 +16,20 @@ export const PositionSpecificationView = ({setPos, pos, defaultPos}: { setPos: (
             <TextField
                 label="X" id="outlined-start-adornment" sx={{m: 1, width: '12ch'}}
                 InputProps={{endAdornment: <InputAdornment position="end">mm</InputAdornment>,}}
-                onChange={event => handleChange(Axis3D.X, event)} defaultValue={defaultPos.x}
+                onChange={event => handleChange(Axis3D.X, event)} 
+                value={pos.x}
             />
             <TextField
                 label="Y" id="outlined-start-adornment" sx={{m: 1, width: '12ch'}}
                 InputProps={{endAdornment: <InputAdornment position="end">mm</InputAdornment>,}}
-                onChange={event => handleChange(Axis3D.Y, event)} defaultValue={defaultPos.y}
+                onChange={event => handleChange(Axis3D.Y, event)}
+                value={pos.y}
             />
             <TextField
                 label="Z" id="outlined-start-adornment" sx={{m: 1, width: '12ch'}}
                 InputProps={{endAdornment: <InputAdornment position="end">mm</InputAdornment>,}}
-                onChange={event => handleChange(Axis3D.Z, event)} defaultValue={defaultPos.z}
+                onChange={event => handleChange(Axis3D.Z, event)}
+                value={pos.z}
             />
         </Box>
     </div>)

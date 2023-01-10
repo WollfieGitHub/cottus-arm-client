@@ -13,15 +13,7 @@ import {PositionSpecificationView} from "../../CottusArm/PositionSpecificationVi
 import {Vector3D} from "../../../../Domain/Models/Maths/Vector3D";
 import React from "react";
 
-const DefaultPos: Vector3D = Vector3D.Zero;
-
 export const BezierToAnimationView = () => {
-    
-    const { 
-        setPosition, position,
-        setRelative, setTime, animation
-    } = useViewModel();
-    
     
     return (<div className={"line-to-animation"} style={{width: '100%'}}>
         { /* Doesn't work */ }
@@ -32,7 +24,6 @@ export const BezierToAnimationView = () => {
         </div>
         <Divider />
         <div className={'position'} style={{marginTop: 10}}>
-            <PositionSpecificationView setPos={setPosition} pos={position} defaultPos={DefaultPos} />
             <Stack direction={'row'} spacing={1} alignItems={'center'} justifyContent={'flex-start'}>
                 <Typography>Absolute</Typography>
                 <Switch defaultChecked />

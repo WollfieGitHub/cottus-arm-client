@@ -1,4 +1,4 @@
-import {useEffect, useRef, useState} from "react";
+import {MutableRefObject, useEffect, useRef, useState} from "react";
 import {CottusArm} from "../../../Domain/Models/CottusArm";
 import {CottusArmRepositoryImpl} from "../../../Data/Repository/CottusArmRepositoryImpl";
 import CottusArmDatasourceAPIImpl from "../../../Data/Datasource/API/CottusArmDatasourceAPIImpl";
@@ -12,18 +12,21 @@ import {drawReferential} from "./canvas/Drawers/ReferentialDrawer";
 import {drawArm} from "./canvas/Drawers/JointDrawer";
 import {Projection} from "../../../Domain/Models/Maths/Projection/Projection";
 import drawEndEffector from "./canvas/Drawers/EndEffectorDrawer";
+import CottusArmDatasource from "../../../Data/Datasource/CottusArmDatasource";
 
 const canvasWidth: number = 700;
 const canvasHeight: number = 700;
 
-const UseCase = new CottusArmUseCase( new CottusArmRepositoryImpl(new CottusArmDatasourceAPIImpl()) );
-
 let prev = Date.now();
 
-export default function useCottusArmViewModel() {
+export default function useCottusArmViewModel(
+    datasource: CottusArmDatasource,
+    armRef: MutableRefObject<CottusArm|undefined>
+) {
     
     // Update the arm's state
-    const cottusArmRef = useRef<CottusArm>();
+    const [ useCase, setUseCase ] = useState<CottusArmUseCase>();
+    const [ drivenArm, setDrivenArm ] = useState<CottusArm>();
     const [ cottusArm, setCottusArm ] = useState<CottusArm>();
     
     const dtRef = useRef<number>(0);
@@ -35,29 +38,37 @@ export default function useCottusArmViewModel() {
     const { projection, setProjectionType, projectionType } = useCanvasNavigation(canvas, canvasWidth, canvasHeight, dtRef);
     useEffect(() => { projectionRef.current = projection; }, [ projection ])
     
-    const { selectedJoint, hoveredJoint} = useJointSelection(canvas, cottusArmRef, projectionRef);
-    const { draw: drawTools, editMode, setEditMode } = useControlTools(canvas, cottusArmRef);
+    const { selectedJoint, hoveredJoint} = useJointSelection(canvas, armRef, projectionRef);
+    const { draw: drawTools, editMode, setEditMode } = useControlTools(canvas, armRef);
 
     // On each redraw, update dt
     const curr = Date.now();
     dtRef.current = (curr - prev) / 1000;
     prev = curr;
     
+    useEffect(() => {
+        setUseCase( new CottusArmUseCase(new CottusArmRepositoryImpl(datasource)) );
+    }, [datasource])
+    
     // Execute once, on component mount
     useEffect(() => {
         if (canvasRef.current === null) { return; }
-        
-        // TODO CHECK Note to self : Putting this out of the useEffect hook
-        // is a stupid move because it subscribes every time the components renders and
-        // that was why the page starts freezing after a while
-        UseCase.subscribe((data) => { 
-            setCottusArm(data)
-            cottusArmRef.current = data;
-        });
         const c = new Canvas(canvasRef.current);
         setCanvas(c)
-        
     }, [])
+    
+    useEffect(() => {
+        if (useCase !== undefined) {
+            useCase.subscribe((data) => {
+                const [ simulatedArm, drivenArm ] = data;
+                
+                setDrivenArm(drivenArm);
+                
+                setCottusArm(simulatedArm)
+                armRef.current = simulatedArm;
+            });
+        }
+    }, [ useCase ])
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
     const draw = (ctx: CanvasRenderingContext2D) => {
@@ -73,7 +84,8 @@ export default function useCottusArmViewModel() {
         drawReferential(ctx, projection);
 
         // If the arm data isn't available, don't draw it
-        drawArm(ctx, cottusArm, projection, hoveredJoint, selectedJoint);
+        drawArm(ctx, cottusArm, projection, false, hoveredJoint, selectedJoint);
+        drawArm(ctx, drivenArm, projection, true);
 
         drawEndEffector(ctx, projection, cottusArm?.endEffector);
 

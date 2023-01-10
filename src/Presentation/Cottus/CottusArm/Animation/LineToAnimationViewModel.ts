@@ -1,9 +1,11 @@
 import {useEffect, useState} from "react";
 import {LineToAnimation} from "../../../../Domain/Models/Animation/LineToAnimation";
 import {Vector3D} from "../../../../Domain/Models/Maths/Vector3D";
+import {ArmAnimation} from "../../../../Domain/Models/Animation/ArmAnimation";
 
-export const useViewModel = () => {
-    const [ animation, setAnimation ] = useState<LineToAnimation>();
+export const useViewModel = (
+    setAnimation: (animation: ArmAnimation) => void
+) => {
     
     const [ time, setTime ] = useState<number>()
     const [ relative, setRelative ] = useState<boolean>(false)
@@ -12,8 +14,12 @@ export const useViewModel = () => {
     // Update the animation
     useEffect(() => {
         if (time !== undefined && relative !== undefined && position !== undefined)
-        setAnimation(/* TODO */ undefined)
-    }, [time, relative, position])
+        setAnimation({
+            relative: relative,
+            time: time,
+            position: position
+        } as LineToAnimation)
+    }, [time, relative, position, setAnimation])
     
-    return { animation, setTime, setRelative, setPosition, position };
+    return { setTime, setRelative, setPosition, position };
 }

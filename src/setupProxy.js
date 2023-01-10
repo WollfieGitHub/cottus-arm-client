@@ -6,7 +6,6 @@ module.exports = function(app) {
         '/api',
         createProxyMiddleware({
             target: target,
-            logLevel: "debug",
             pathRewrite: {
                 '^/api': '/api' //remove /service/api
             },
