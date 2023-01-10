@@ -25,5 +25,13 @@ export default class AnimationDatasourceAPIImpl implements AnimationDatasource {
         const data = await response.json();
         return fromApiAnimationPreview(data);
     }
+
+    async getMinTimeSec(animation: ArmAnimation): Promise<number> {
+        const response = await typedPost<ArmAnimation, number>(
+            `/api/arm-animation/min-time`, animation
+        )
+        const data = await response.text();
+        return parseFloat(data);
+    }
     
 }

@@ -22,5 +22,12 @@ export class AnimationRepositoryImpl implements AnimationRepository {
         return this.datasource.preview(animation);
     }
 
+    async getMinTimeSec(animation: ArmAnimation): Promise<number> {
+        return this.datasource.getMinTimeSec(animation);
+    }
+    
+    
+    
+
     
 }
