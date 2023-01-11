@@ -1,16 +1,33 @@
 import {Box, Card, SxProps, Tab, Tabs, Theme, Typography} from "@mui/material";
-import React, {MutableRefObject} from "react";
+import React, {MutableRefObject, useEffect, useState} from "react";
 import AnimationPlayerView from "./AnimationPlayerView";
 import AnimationRecorderView from "./AnimationRecorderView";
 import {CottusArm} from "../../../Domain/Models/CottusArm";
+import {AnimationPreview} from "../../../Domain/Models/Animation/AnimationPreview";
+import {AnimationPrimitive} from "../../../Domain/Models/Animation/AnimationPrimitive";
+import {useAnimationControlViewModel} from "../../../Presentation/Cottus/CottusArm/Animation/AnimationControlViewModel";
 
-const AnimationControlView = ({sx, armRef}: {sx?: SxProps<Theme>, armRef: MutableRefObject<CottusArm|undefined>}) => {
+const AnimationControlView = ({sx, armRef, setAnimationPreview}: {
+    sx?: SxProps<Theme>, 
+    armRef: MutableRefObject<CottusArm|undefined>,
+    setAnimationPreview: (preview?: AnimationPreview) => void
+}) => {
 
     const [value, setValue] = React.useState(0);
+
+    const {
+        animations, getAnimationList,
+        previewAnimation, hidePreview
+    } = useAnimationControlViewModel(setAnimationPreview);
 
     const handleChange = (event: React.SyntheticEvent, newValue: number) => {
         setValue(newValue);
     };
+    
+    const setAnimationToPreview = (animation?: AnimationPrimitive) => {
+        if (animation === undefined) { hidePreview(); } 
+        else { previewAnimation(animation).then(); }
+    }
     
     return (
         <Card sx={sx}>
@@ -24,8 +41,11 @@ const AnimationControlView = ({sx, armRef}: {sx?: SxProps<Theme>, armRef: Mutabl
                     <Tab label="Record" />
                 </Tabs>
             </Box>
-            <TabPanel value={value} index={0}> <AnimationPlayerView />   </TabPanel> 
-            <TabPanel value={value} index={1}> <AnimationRecorderView arm={armRef} /> </TabPanel>
+            <TabPanel value={value} index={0}>
+                <AnimationPlayerView setAnimationToPreview={setAnimationToPreview} animations={animations}
+                    getAnimationList={getAnimationList} hidePreview={hidePreview} /> 
+            </TabPanel> 
+            <TabPanel value={value} index={1}> <AnimationRecorderView arm={armRef} setAnimationToPreview={setAnimationToPreview} /> </TabPanel>
         </Card>
     );
 }

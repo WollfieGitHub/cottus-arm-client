@@ -7,13 +7,16 @@ import CottusArmDatasourceAPIImpl from "../../Data/Datasource/API/CottusArmDatas
 import {jsx} from "@emotion/react";
 import JSX = jsx.JSX;
 import {CottusArm} from "../../Domain/Models/CottusArm";
+import {AnimationPreview} from "../../Domain/Models/Animation/AnimationPreview";
 
 const datasource: CottusArmDatasourceAPIImpl = new CottusArmDatasourceAPIImpl();
 
 const Dashboard = () => {
+
+    const armRef = useRef<CottusArm>();
+    const [ animationPreview, setAnimationPreview ] = useState<AnimationPreview|undefined>(undefined);
     
     const [ armReady, setArmReady ] = useState<boolean>();
-    const armRef = useRef<CottusArm>();
     const [ reconnectionDelay, setReconnectionDelay ] = useState(0);
 
     const [time, setTime] = useState(Date.now());
@@ -38,9 +41,13 @@ const Dashboard = () => {
                 margin: "0 auto 0 auto",
                 width: "max-content", height: 'max-content'
             }}>
-                <AnimationControlView sx={{margin: '5px', padding: '10px', width: 380, visibility}} armRef={armRef}/>
-                <CottusArmView setArmReady={setArmReady} visibility={visibility} datasource={datasource} armRef={armRef}/>
-                <EndEffectorControlView sx={{margin: '5px', padding: '10px', width: 380, visibility}} />
+                <AnimationControlView sx={{padding: 1, width: 380, visibility}} 
+                                      armRef={armRef} setAnimationPreview={setAnimationPreview} />
+                
+                <CottusArmView setArmReady={setArmReady} visibility={visibility} datasource={datasource} 
+                               armRef={armRef} animationPreview={animationPreview} />
+                
+                <EndEffectorControlView sx={{padding: 1, width: 380, visibility}} />
             </Box>);
         } else {
             return (<Stack direction={'column'} className={'dashboard-content'} sx={{width: 400}} alignItems={'center'}>

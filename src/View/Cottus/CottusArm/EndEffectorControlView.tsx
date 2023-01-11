@@ -14,7 +14,7 @@ import {typedPost} from "../../../Data/Datasource/utils/DatasourceUtils";
 import {PositionSpecificationView} from "./PositionSpecificationView";
 
 const DefaultOrientation: Vector3D = new Vector3D(0, Math.PI/2.0, 0);
-const DefaultPos: Vector3D = new Vector3D(200, 200, 150);
+const DefaultPos: Vector3D = new Vector3D(200, 200, 250);
 
 
 const RotationSpecification = ({setRot, rot} : {setRot: (rot: Vector3D) => void, rot: Vector3D}) => {

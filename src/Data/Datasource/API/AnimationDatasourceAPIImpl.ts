@@ -1,7 +1,7 @@
 import AnimationDatasource from "../AnimationDatasource";
-import {ArmAnimationAPIEntity} from "./Entity/Animation/ArmAnimationAPIEntity";
+import {AnimationPrimitiveAPIEntity} from "./Entity/Animation/AnimationPrimitiveAPIEntity";
 import {typedFetch, typedPost} from "../utils/DatasourceUtils";
-import {ArmAnimation} from "../../../Domain/Models/Animation/ArmAnimation";
+import {AnimationPrimitive} from "../../../Domain/Models/Animation/AnimationPrimitive";
 import {AnimationPreview} from "../../../Domain/Models/Animation/AnimationPreview";
 import {
     AnimationPreviewAPIEntity,
@@ -19,17 +19,19 @@ export default class AnimationDatasourceAPIImpl implements AnimationDatasource {
         return data.map(datum => fromApiEntry(datum));
     }
 
-    async preview(animation: ArmAnimation): Promise<AnimationPreview> {
-        const response = await typedPost<ArmAnimation, AnimationPreviewAPIEntity>(
-            `/api/arm-animation/preview`, animation
+    async preview(animation: AnimationPrimitive): Promise<AnimationPreview> {
+        console.log(animation.toApiEntity());
+        const response = await typedPost<AnimationPrimitiveAPIEntity, AnimationPreviewAPIEntity>(
+            `/api/arm-animation/preview?nb_points=${20}`, animation.toApiEntity()
         )
+        console.log(response);
         const data = await response.json();
         return fromApiAnimationPreview(data);
     }
 
-    async getMinTimeSec(animation: ArmAnimation): Promise<number> {
-        const response = await typedPost<ArmAnimation, number>(
-            `/api/arm-animation/min-time`, animation
+    async getMinTimeSec(animation: AnimationPrimitive): Promise<number> {
+        const response = await typedPost<AnimationPrimitiveAPIEntity, number>(
+            `/api/arm-animation/min-time?nb_points=${20}`, animation.toApiEntity()
         )
         const data = await response.text();
         return parseFloat(data);

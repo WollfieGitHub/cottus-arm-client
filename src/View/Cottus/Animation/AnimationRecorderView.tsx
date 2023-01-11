@@ -6,19 +6,24 @@ import AnimationTimelineView from "./AnimationTimelineView";
 import AnimationPlayerView from "./AnimationPlayerView";
 import useViewModel from "../../../Presentation/Cottus/CottusArm/Animation/AnimationRecorderViewModel";
 import {CottusArm} from "../../../Domain/Models/CottusArm";
+import {AnimationPreview} from "../../../Domain/Models/Animation/AnimationPreview";
+import {AnimationPrimitive} from "../../../Domain/Models/Animation/AnimationPrimitive";
 
 const centeredRowFlexbox: any = {display: "flex", flexDirection: "row", alignItems: "center", justifyContent: "space-evenly"};
 const centeredColumnFlexbox: any = {display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "space-evenly"};
 
-const AnimationRecorderView = (props: {arm: MutableRefObject<CottusArm|undefined>}) => {
+const AnimationRecorderView = (props: {
+    arm: MutableRefObject<CottusArm|undefined>,
+    setAnimationToPreview: (preview?: AnimationPrimitive) => void
+}) => {
     
     const { 
         recording, setRecording,
         name, setName,
         undoLast, remove, captureFrame,
         currentFramePosition, addAnimation,
-        setPreview
-    } = useViewModel(props.arm);
+        setPreview, animation
+    } = useViewModel(props.arm, props.setAnimationToPreview);
 
     const [tabValue, setTabValue] = React.useState(0);
 
@@ -60,15 +65,15 @@ const AnimationRecorderView = (props: {arm: MutableRefObject<CottusArm|undefined
                     </Tabs>
                 </Stack>
                 <TabPanel value={tabValue} index={0}>
-                    <div className={'prebuilt-animation'} style={{...centeredColumnFlexbox}}>
+                    <Stack className={'prebuilt-animation'} direction={'column'} justifyContent={'center'}>
                         <PrebuiltAnimationSelectorView recording={recording} position={currentFramePosition}
-                            setAnimation={setPreview}/>
-                    </div>
+                            setAnimation={setPreview} addAnimation={addAnimation}/>
+                    </Stack>
                 </TabPanel>
                 <TabPanel value={tabValue} index={1}>
-                    <div className={'animation-timeline'} style={{...centeredColumnFlexbox}}>
-                        <AnimationTimelineView />
-                    </div>
+                    <Stack className={'animation-timeline'} direction={'column'} justifyContent={'center'}>
+                        <AnimationTimelineView composedAnimation={animation} />
+                    </Stack>
                 </TabPanel>
             </div>
         </div>
@@ -106,10 +111,11 @@ const UndoButton = (props: {
             </React.Fragment>
         }>
             <span>
-                <Button disabled={!props.recording} variant={"outlined"} startIcon={<Undo color={"secondary"}/>}
-                        onClick={props.undo}>
-                Undo
-            </Button>
+                <Button disabled={!props.recording} variant={"outlined"} 
+                        startIcon={<Undo color={"secondary"}/>} onClick={props.undo}
+                >
+                    Undo
+                </Button>
             </span>
         </Tooltip>);
 }
@@ -120,7 +126,7 @@ const CaptureCurrentFrameButton = (props: {
     recording: boolean,
     capture: () => void
 }) => {
-    return <div className={"capture-frame-btn"}
+    return (<div className={"capture-frame-btn"}
                 style={{...centeredRowFlexbox, padding: '10px 0 10px 0'}}>
         <Tooltip title={
             <React.Fragment>
@@ -132,11 +138,11 @@ const CaptureCurrentFrameButton = (props: {
             <span>
                 <Button variant={"outlined"} startIcon={<Circle color={"error"}/>}
                         disabled={!props.recording} onClick={props.capture}>
-                Capture Frame
-            </Button>
+                    Capture Frame
+                </Button>
             </span>
         </Tooltip>
-    </div>;
+    </div>);
 }
 
 export default AnimationRecorderView;

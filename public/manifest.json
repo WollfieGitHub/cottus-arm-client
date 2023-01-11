@@ -1,6 +1,6 @@
 {
-  "short_name": "React App",
-  "name": "Create React App Sample",
+  "short_name": " Cottus Arm Controller",
+  "name": "Robotic Arm Controller for 7 DOF Open source arm",
   "icons": [
     {
       "src": "favicon.ico",

@@ -6,18 +6,20 @@ import ChangeEditModeButton from "../../../Presentation/Cottus/CottusArm/canvas/
 import {MutableRefObject, useEffect} from "react";
 import CottusArmDatasource from "../../../Data/Datasource/CottusArmDatasource";
 import {CottusArm} from "../../../Domain/Models/CottusArm";
+import {AnimationPreview} from "../../../Domain/Models/Animation/AnimationPreview";
 
 const CottusArmView = (props: {
     setArmReady: (ready: boolean|undefined) => void, 
     visibility: string,
     datasource: CottusArmDatasource,
-    armRef: MutableRefObject<CottusArm|undefined>
+    armRef: MutableRefObject<CottusArm|undefined>,
+    animationPreview?: AnimationPreview
 }) => {
     const { 
         canvasWidth, canvasHeight, canvasRef,
         projectionType, setProjectionType,
         editMode, setEditMode
-    } = useCottusArmViewModel(props.datasource, props.armRef);
+    } = useCottusArmViewModel(props.datasource, props.armRef, props.animationPreview);
     
     const theme = useTheme();
     

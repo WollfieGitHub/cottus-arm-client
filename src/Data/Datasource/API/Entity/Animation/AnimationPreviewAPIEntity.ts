@@ -1,5 +1,5 @@
 import {Vector3DAPIEntity} from "../Vector3DAPIEntity";
-import {ArmAnimationAPIEntity} from "./ArmAnimationAPIEntity";
+import {AnimationPrimitiveAPIEntity} from "./AnimationPrimitiveAPIEntity";
 import {AnimationPreview, AnimationPreviewPoint} from "../../../../../Domain/Models/Animation/AnimationPreview";
 import {Vector3D} from "../../../../../Domain/Models/Maths/Vector3D";
 import {fromApi as fromApiVector} from "../Vector3DAPIEntity";

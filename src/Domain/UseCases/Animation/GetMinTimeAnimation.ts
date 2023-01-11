@@ -1,5 +1,5 @@
 import AnimationRepository from "../../Repository/AnimationRepository";
-import {ArmAnimation} from "../../Models/Animation/ArmAnimation";
+import {AnimationPrimitive} from "../../Models/Animation/AnimationPrimitive";
 import {AnimationPreview} from "../../Models/Animation/AnimationPreview";
 
 export class AnimationMinTimeUseCase {
@@ -11,7 +11,7 @@ export class AnimationMinTimeUseCase {
         this.animationRepository = animationRepository;
     }
 
-    async invoke(animation: ArmAnimation): Promise<number> {
+    async invoke(animation: AnimationPrimitive): Promise<number> {
         return this.animationRepository.getMinTimeSec(animation);
     }
 }

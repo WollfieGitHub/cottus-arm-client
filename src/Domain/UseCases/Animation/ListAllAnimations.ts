@@ -1,5 +1,5 @@
 import AnimationRepository from "../../Repository/AnimationRepository";
-import {ArmAnimation} from "../../Models/Animation/ArmAnimation";
+import {AnimationPrimitive} from "../../Models/Animation/AnimationPrimitive";
 import {AnimationPreview} from "../../Models/Animation/AnimationPreview";
 import {AnimationEntry} from "../../Models/Animation/AnimationEntry";
 

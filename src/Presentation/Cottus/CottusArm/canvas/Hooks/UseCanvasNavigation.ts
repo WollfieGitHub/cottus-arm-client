@@ -61,7 +61,7 @@ const useCanvasNavigation = (
     }
     
     const [ rotX, setRotX ] = useState(0);
-    const [ rotZ, setRotZ ] = useState(0);
+    const [ rotZ, setRotZ ] = useState(-Math.PI/4);
     
     const [ zoomLevel, setZoomLevel ] = useState<number>(1.4747);
     

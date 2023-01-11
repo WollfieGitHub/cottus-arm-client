@@ -13,6 +13,8 @@ import {drawArm} from "./canvas/Drawers/JointDrawer";
 import {Projection} from "../../../Domain/Models/Maths/Projection/Projection";
 import drawEndEffector from "./canvas/Drawers/EndEffectorDrawer";
 import CottusArmDatasource from "../../../Data/Datasource/CottusArmDatasource";
+import {AnimationPreview} from "../../../Domain/Models/Animation/AnimationPreview";
+import {drawAnimationPreview} from "./canvas/Drawers/AnimationPreviewDrawer";
 
 const canvasWidth: number = 700;
 const canvasHeight: number = 700;
@@ -21,7 +23,8 @@ let prev = Date.now();
 
 export default function useCottusArmViewModel(
     datasource: CottusArmDatasource,
-    armRef: MutableRefObject<CottusArm|undefined>
+    armRef: MutableRefObject<CottusArm|undefined>,
+    animationPreview?: AnimationPreview
 ) {
     
     // Update the arm's state
@@ -82,6 +85,8 @@ export default function useCottusArmViewModel(
 
         // Draw the referential for the world space
         drawReferential(ctx, projection);
+        
+        if (animationPreview !== undefined) { drawAnimationPreview(ctx, animationPreview, projection); }
 
         // If the arm data isn't available, don't draw it
         drawArm(ctx, cottusArm, projection, false, hoveredJoint, selectedJoint);

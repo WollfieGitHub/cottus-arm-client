@@ -12,11 +12,11 @@ import {ExpandMore} from "@mui/icons-material"
 import {PositionSpecificationView} from "../../CottusArm/PositionSpecificationView";
 import {Vector3D} from "../../../../Domain/Models/Maths/Vector3D";
 import React, {ChangeEvent, useEffect} from "react";
-import {ArmAnimation} from "../../../../Domain/Models/Animation/ArmAnimation";
+import {AnimationPrimitive} from "../../../../Domain/Models/Animation/AnimationPrimitive";
 
 export const LineToAnimationView = (props: {
     position: Vector3D|undefined,
-    setAnimation: (animation: ArmAnimation) => void
+    setAnimation: (animation: AnimationPrimitive) => void
 }) => {
     const { position: currentPosition } = props;
     
@@ -34,7 +34,7 @@ export const LineToAnimationView = (props: {
     }, [currentPosition])
 
     const handleRelativeChange = (e: ChangeEvent<HTMLInputElement>) => {
-        setRelative(e.target.value === 'true');
+        setRelative(e.target.checked);
     }
     
     const handleTimeChange = (e: ChangeEvent<HTMLInputElement>) => {

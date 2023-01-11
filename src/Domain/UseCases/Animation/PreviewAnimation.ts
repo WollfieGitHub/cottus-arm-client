@@ -1,4 +1,4 @@
-import {ArmAnimation} from "../../Models/Animation/ArmAnimation";
+import {AnimationPrimitive} from "../../Models/Animation/AnimationPrimitive";
 import {AnimationPreview} from "../../Models/Animation/AnimationPreview";
 import AnimationRepository from "../../Repository/AnimationRepository";
 
@@ -11,7 +11,7 @@ export class AnimationPreviewUseCase {
         this.animationRepository = animationRepository;
     }
 
-    async invoke(animation: ArmAnimation): Promise<AnimationPreview> {
+    async invoke(animation: AnimationPrimitive): Promise<AnimationPreview> {
         return this.animationRepository.preview(animation);
     }
 }

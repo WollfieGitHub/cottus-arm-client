@@ -1,6 +1,6 @@
-import {ArmAnimation} from "./ArmAnimation";
+import {AnimationPrimitive} from "./AnimationPrimitive";
 
 export interface AnimationEntry {
-    animation: ArmAnimation,
+    animation: AnimationPrimitive,
     name: string, 
 }

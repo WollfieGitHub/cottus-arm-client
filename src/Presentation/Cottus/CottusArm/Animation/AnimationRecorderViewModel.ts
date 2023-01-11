@@ -1,30 +1,32 @@
-import {MutableRefObject, useState} from "react";
+import {MutableRefObject, useEffect, useState} from "react";
 import {CottusArm} from "../../../../Domain/Models/CottusArm";
 import {Vector3D} from "../../../../Domain/Models/Maths/Vector3D";
-import {ArmAnimation} from "../../../../Domain/Models/Animation/ArmAnimation";
+import {AnimationPrimitive} from "../../../../Domain/Models/Animation/AnimationPrimitive";
+import {AnimationComposition} from "../../../../Domain/Models/Animation/Prebuilt/AnimationComposition";
 
 const useViewModel = (
-    armRef: MutableRefObject<CottusArm|undefined>
+    armRef: MutableRefObject<CottusArm|undefined>,
+    setAnimationToPreview: (preview?: AnimationPrimitive) => void,
 ) => {
     const [ recording, setRecording ] = useState(false);
     const [ name, setName ] = useState('');
-    const [ animations, setAnimations ] = useState<ArmAnimation[]>([])
-    const [ preview, setPreview ] = useState<ArmAnimation>()
+    const [ animation, setAnimation ] = useState<AnimationComposition>(new AnimationComposition([]))
+    const [ preview, setPreview ] = useState<AnimationPrimitive>()
     
     const [ currentFramePosition, setCurrentFramePosition ] = useState(Vector3D.Zero);
     
     const remove = (animationIndex: number) => {
-        setAnimations(a => {
-            const animations = [...a] // Copy array
+        setAnimation(a => {
+            const animations = [...a.animations] // Copy array
             animations.splice(animationIndex, 1);
-            return animations;
+            return new AnimationComposition([...animations]);
         })
     }
     const undoLast = () => { // I'm not sure remove(length-1) would have worked because of states in react
-        setAnimations(a => {
-            const animations = [...a] // Copy array
+        setAnimation(a => {
+            const animations = [...a.animations] // Copy array
             animations.splice(animations.length-1, 1);
-            return animations;
+            return new AnimationComposition(animations);
         })
     }
     
@@ -39,19 +41,29 @@ const useViewModel = (
     const addAnimation = () => {
         if (preview === undefined) { throw new Error("The preview shouldn't be empty when clicked on add Animation"); }
         
-        setAnimations(a => {
-            const animations = [...a] // Copy array
+        setAnimation(a => {
+            const animations = [...a.animations] // Copy array
             animations.push(preview);
-            return animations;
+            return new AnimationComposition(animations);
         })
     }
+    
+    useEffect(() => {
+        if (preview === undefined) { return; }
+        
+        const animations = [...animation.animations] // Copy array
+        animations.push(preview);
+        const toPreview: AnimationPrimitive = new AnimationComposition(animations)
+        
+        setAnimationToPreview(toPreview)
+    }, [preview]);
     
     return { 
         recording, setRecording,
         name, setName,
         undoLast, remove, captureFrame,
         currentFramePosition, setPreview,
-        addAnimation
+        addAnimation, animation
     }
 }
 

@@ -1,7 +1,7 @@
 import AnimationRepository from "../../Domain/Repository/AnimationRepository";
 import AnimationDatasource from "../Datasource/AnimationDatasource";
-import {ArmAnimationAPIEntity} from "../Datasource/API/Entity/Animation/ArmAnimationAPIEntity";
-import {ArmAnimation} from "../../Domain/Models/Animation/ArmAnimation";
+import {AnimationPrimitiveAPIEntity} from "../Datasource/API/Entity/Animation/AnimationPrimitiveAPIEntity";
+import {AnimationPrimitive} from "../../Domain/Models/Animation/AnimationPrimitive";
 import {AnimationPreview} from "../../Domain/Models/Animation/AnimationPreview";
 import {AnimationEntry} from "../../Domain/Models/Animation/AnimationEntry";
 
@@ -18,11 +18,11 @@ export class AnimationRepositoryImpl implements AnimationRepository {
         return this.datasource.listAll();
     }
 
-    async preview(animation: ArmAnimation): Promise<AnimationPreview> {
+    async preview(animation: AnimationPrimitive): Promise<AnimationPreview> {
         return this.datasource.preview(animation);
     }
 
-    async getMinTimeSec(animation: ArmAnimation): Promise<number> {
+    async getMinTimeSec(animation: AnimationPrimitive): Promise<number> {
         return this.datasource.getMinTimeSec(animation);
     }
     

@@ -1,5 +1,5 @@
 import {useState} from "react";
-import {ArmAnimation} from "../../../../Domain/Models/Animation/ArmAnimation";
+import {AnimationPrimitive} from "../../../../Domain/Models/Animation/AnimationPrimitive";
 import {ListAllAnimationsUseCase} from "../../../../Domain/UseCases/Animation/ListAllAnimations";
 import AnimationRepository from "../../../../Domain/Repository/AnimationRepository";
 import {AnimationRepositoryImpl} from "../../../../Data/Repository/AnimationRepositoryImpl";
@@ -15,23 +15,24 @@ const ListAllUseCase = new ListAllAnimationsUseCase(animationRepository);
 const PreviewUseCase = new AnimationPreviewUseCase(animationRepository);
 const MinTimeUseCase = new AnimationMinTimeUseCase(animationRepository);
 
-export function useViewModel() {
+export function useAnimationControlViewModel(
+    setAnimationPreview: (preview?: AnimationPreview) => void
+) {
     
     const [ animations, setAnimations ] = useState<AnimationEntry[]>([]);
-    const [ currentPreview, setCurrentPreview ] = useState<AnimationPreview|null>(null);
     const [ previewMinTime, setPreviewMinTime ] = useState<number|null>(null);
     
     async function getAnimationList(): Promise<void> { setAnimations(await ListAllUseCase.invoke()); }
     
-    async function previewAnimation(animation: ArmAnimation): Promise<void> { 
-        setCurrentPreview(await PreviewUseCase.invoke(animation));
+    async function previewAnimation(animation: AnimationPrimitive): Promise<void> {
+        setAnimationPreview(await PreviewUseCase.invoke(animation));
         setPreviewMinTime(await MinTimeUseCase.invoke(animation));
     }
     
-    function hidePreview() { setCurrentPreview(null); }
+    function hidePreview() { setAnimationPreview(undefined); }
     
     return {
         animations, getAnimationList, 
-        currentPreview, previewAnimation, hidePreview, previewMinTime
+        previewAnimation, hidePreview, previewMinTime
     }
 }
