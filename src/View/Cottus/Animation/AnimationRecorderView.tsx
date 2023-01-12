@@ -14,7 +14,8 @@ const centeredColumnFlexbox: any = {display: "flex", flexDirection: "column", al
 
 const AnimationRecorderView = (props: {
     arm: MutableRefObject<CottusArm|undefined>,
-    setAnimationToPreview: (preview?: AnimationPrimitive) => void
+    setAnimationToPreview: (preview?: AnimationPrimitive) => void,
+    saveAnimation: (name: string, animation: AnimationPrimitive) => Promise<boolean>,
 }) => {
     
     const { 
@@ -25,11 +26,15 @@ const AnimationRecorderView = (props: {
         setPreview, animation
     } = useViewModel(props.arm, props.setAnimationToPreview);
 
-    const [tabValue, setTabValue] = React.useState(0);
+    const [tabValue, setTabValue] = useState(0);
 
-    const handleTabChange = (event: React.SyntheticEvent, newValue: number) => {
-        setTabValue(newValue);
-    };
+    const [ saveFailed, setSaveFailed ] = useState(false);
+    const handleTabChange = (event: React.SyntheticEvent, newValue: number) => { setTabValue(newValue); };
+    
+    const notifySaveFailed = () => {
+        setSaveFailed(true);
+        setTimeout(() => setSaveFailed(false), 1000);
+    }
     
     return (
         <div className={'animation-recorder'} style={{}}>
@@ -40,11 +45,24 @@ const AnimationRecorderView = (props: {
                                id="outlined-basic" label="Animation Name" variant="outlined"
                                fullWidth={true} sx={{margin: '10px 0 10px 0'}}
                                disabled={recording}/>
-                    <Button variant={'contained'} color={(!recording ? 'primary' : 'error')}
-                            onClick={() => setRecording(!recording)}
-                            sx={{margin: '0 0 10px 0'}} disabled={name === ''}>
-                        {!recording ? 'Create New' : 'Cancel Creation'}
-                    </Button>
+                    <Stack direction={'row'} justifyContent={'space-evenly'}>
+                        <Button variant={'contained'} color={(!recording ? 'primary' : 'error')} 
+                                onClick={() => setRecording(!recording)} disabled={name === ''}>
+                            {!recording ? 'Create New' : 'Cancel Creation'}
+                        </Button>
+                        <Button variant={'contained'} color={(saveFailed ? 'error' : 'success')} 
+                                onClick={() => {
+                                    if (animation.animations.length === 0) { notifySaveFailed() }
+                                    else {
+                                        props.saveAnimation(name, animation).then(success => {
+                                            if (!success) { notifySaveFailed(); }
+                                            else { setRecording(false) }
+                                        });
+                                    }
+                                }} disabled={!recording}>
+                            {"Save"}
+                        </Button>
+                    </Stack>
                 </Stack>
             </div>
             <Divider variant={'middle'}/>

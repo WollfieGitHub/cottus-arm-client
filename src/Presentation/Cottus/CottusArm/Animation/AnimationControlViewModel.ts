@@ -8,12 +8,16 @@ import {AnimationPreviewUseCase} from "../../../../Domain/UseCases/Animation/Pre
 import {AnimationPreview} from "../../../../Domain/Models/Animation/AnimationPreview";
 import {AnimationEntry} from "../../../../Domain/Models/Animation/AnimationEntry";
 import {AnimationMinTimeUseCase} from "../../../../Domain/UseCases/Animation/GetMinTimeAnimation";
+import {AnimationSaveUseCase} from "../../../../Domain/UseCases/Animation/SaveAnimation";
+import {AnimationPlayUseCase} from "../../../../Domain/UseCases/Animation/PlayAnimation";
 
 const animationRepository: AnimationRepository = new AnimationRepositoryImpl(new AnimationDatasourceAPIImpl());
 
 const ListAllUseCase = new ListAllAnimationsUseCase(animationRepository);
 const PreviewUseCase = new AnimationPreviewUseCase(animationRepository);
 const MinTimeUseCase = new AnimationMinTimeUseCase(animationRepository);
+const SaveUseCase    = new AnimationSaveUseCase(animationRepository);
+const PlayUseCase    = new AnimationPlayUseCase(animationRepository);
 
 export function useAnimationControlViewModel(
     setAnimationPreview: (preview?: AnimationPreview) => void
@@ -29,10 +33,19 @@ export function useAnimationControlViewModel(
         setPreviewMinTime(await MinTimeUseCase.invoke(animation));
     }
     
+    async function saveAnimation(name: string, animation: AnimationPrimitive): Promise<boolean> {
+        return await SaveUseCase.invoke(name, animation);
+    }
+    
     function hidePreview() { setAnimationPreview(undefined); }
+    
+    async function playAnimation(name: string): Promise<boolean> {
+        return await PlayUseCase.invoke(name);
+    }
     
     return {
         animations, getAnimationList, 
-        previewAnimation, hidePreview, previewMinTime
+        previewAnimation, hidePreview, previewMinTime,
+        saveAnimation, playAnimation
     }
 }

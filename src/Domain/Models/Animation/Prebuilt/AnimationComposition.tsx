@@ -24,6 +24,7 @@ export class AnimationComposition extends AnimationPrimitive {
     }
 
     toApiEntity(): AnimationPrimitiveAPIEntity {
+        console.log(this.animations)
         return {
             animations: this.animations.map(a => a.toApiEntity()),
             type: "Composed"

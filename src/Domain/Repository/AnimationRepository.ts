@@ -17,5 +17,10 @@ export default interface AnimationRepository {
 
     /** A preview of the specified animation */
     preview(animation: AnimationPrimitive): Promise<AnimationPreview>
-    
+
+    /** Save the animation */
+    save(name: string, animation: AnimationPrimitive): Promise<boolean>;
+
+    /** Play the animation */
+    play(animationName: string): Promise<boolean>
 }

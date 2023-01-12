@@ -10,6 +10,7 @@ const AnimationPlayerView = (props: {
     getAnimationList: () => Promise<void>,
     animations: AnimationEntry[],
     hidePreview: () => void,
+    playAnimation: (name: string) => Promise<boolean>
 }) => {
 
     const {
@@ -40,7 +41,7 @@ const AnimationPlayerView = (props: {
                 exclusive onChange={handleChange}
                 orientation={'vertical'}
             >
-                { animations.map(animation => AnimationView(animation, handleHoverBegin, handleHoverEnd)) }
+                { animations.map(animation => AnimationView(animation, handleHoverBegin, handleHoverEnd, props.playAnimation)) }
             </ToggleButtonGroup>
         </div>
     );
@@ -49,7 +50,8 @@ const AnimationPlayerView = (props: {
 const AnimationView = (
     animation: AnimationEntry, 
     onHoverBegin: (animation: AnimationEntry) => void,
-    onHoverEnd: () => void
+    onHoverEnd: () => void,
+    playAnimation: (name: string) => Promise<boolean>
 ): JSX.Element => {
     
     return (
@@ -57,6 +59,8 @@ const AnimationView = (
             value={animation.name} 
             onMouseEnter={e => onHoverBegin(animation)}
             onMouseLeave={e => onHoverEnd()}
+            fullWidth
+            onClick={() => playAnimation(animation.name)}
         >
             {animation.name}
         </ToggleButton>

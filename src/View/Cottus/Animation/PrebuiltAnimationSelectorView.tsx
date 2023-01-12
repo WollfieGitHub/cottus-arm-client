@@ -83,7 +83,7 @@ const PrebuiltAnimationSelectorView = (props: {
                 <Button onClick={() => {
                     setPrebuiltAnimationIndex(undefined)
                     props.addAnimation();
-                }} variant={'contained'}>
+                }} variant={'contained'} disabled={!props.recording}>
                     Add Animation
                 </Button>
             </div>

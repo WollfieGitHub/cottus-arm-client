@@ -17,7 +17,8 @@ const AnimationControlView = ({sx, armRef, setAnimationPreview}: {
 
     const {
         animations, getAnimationList,
-        previewAnimation, hidePreview
+        previewAnimation, hidePreview,
+        saveAnimation, playAnimation
     } = useAnimationControlViewModel(setAnimationPreview);
 
     const handleChange = (event: React.SyntheticEvent, newValue: number) => {
@@ -43,9 +44,12 @@ const AnimationControlView = ({sx, armRef, setAnimationPreview}: {
             </Box>
             <TabPanel value={value} index={0}>
                 <AnimationPlayerView setAnimationToPreview={setAnimationToPreview} animations={animations}
-                    getAnimationList={getAnimationList} hidePreview={hidePreview} /> 
+                    getAnimationList={getAnimationList} hidePreview={hidePreview} playAnimation={playAnimation} /> 
             </TabPanel> 
-            <TabPanel value={value} index={1}> <AnimationRecorderView arm={armRef} setAnimationToPreview={setAnimationToPreview} /> </TabPanel>
+            <TabPanel value={value} index={1}> 
+                <AnimationRecorderView arm={armRef} setAnimationToPreview={setAnimationToPreview}
+                    saveAnimation={saveAnimation}/> 
+            </TabPanel>
         </Card>
     );
 }

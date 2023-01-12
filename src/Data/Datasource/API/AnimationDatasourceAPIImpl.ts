@@ -11,6 +11,13 @@ import {AnimationEntry} from "../../../Domain/Models/Animation/AnimationEntry";
 import {AnimationEntryApiEntity, fromApi as fromApiEntry} from "./Entity/Animation/AnimationEntryApiEntity";
 
 export default class AnimationDatasourceAPIImpl implements AnimationDatasource {
+    
+    async save(name: string, animation: AnimationPrimitive): Promise<boolean> {
+        const response = await typedPost<AnimationPrimitiveAPIEntity, boolean>(
+            `/api/arm-animation/save?name=${name}`, animation.toApiEntity()
+        );
+        return await response.json().catch(e => false);
+    }
    
     async listAll(): Promise<AnimationEntry[]> {
         const response = await typedFetch<AnimationEntryApiEntity[]>('/api/arm-animation/list-all');
@@ -20,11 +27,9 @@ export default class AnimationDatasourceAPIImpl implements AnimationDatasource {
     }
 
     async preview(animation: AnimationPrimitive): Promise<AnimationPreview> {
-        console.log(animation.toApiEntity());
         const response = await typedPost<AnimationPrimitiveAPIEntity, AnimationPreviewAPIEntity>(
             `/api/arm-animation/preview?nb_points=${20}`, animation.toApiEntity()
         )
-        console.log(response);
         const data = await response.json();
         return fromApiAnimationPreview(data);
     }
@@ -35,6 +40,13 @@ export default class AnimationDatasourceAPIImpl implements AnimationDatasource {
         )
         const data = await response.text();
         return parseFloat(data);
+    }
+    
+    async play(animationName: string): Promise<boolean> {
+        const response = await typedPost<void, boolean>(
+            `/api/arm-animation/play?name=${animationName}`, undefined
+        );
+        return await response.json().catch(e => false);
     }
     
 }

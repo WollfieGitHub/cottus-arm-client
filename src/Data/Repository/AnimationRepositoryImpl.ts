@@ -14,6 +14,10 @@ export class AnimationRepositoryImpl implements AnimationRepository {
         this.datasource = datasource;
     }
 
+    async save(name: string, animation: AnimationPrimitive): Promise<boolean> {
+        return this.datasource.save(name, animation);
+    }
+
     async listAll(): Promise<AnimationEntry[]> {
         return this.datasource.listAll();
     }
@@ -26,8 +30,14 @@ export class AnimationRepositoryImpl implements AnimationRepository {
         return this.datasource.getMinTimeSec(animation);
     }
     
-    
-    
+    async play(animationName: string): Promise<boolean> {
+        return this.datasource.play(animationName);
+    }
 
-    
+
+
+
+
+
+
 }

@@ -1,6 +1,7 @@
 import {AnimationPrimitiveAPIEntity} from "./AnimationPrimitiveAPIEntity";
 import {AnimationEntry} from "../../../../../Domain/Models/Animation/AnimationEntry";
 import {Circle} from "@mui/icons-material";
+import {fromApi as fromApiAnimation} from "./AnimationPrimitiveAPIEntity";
 
 
 export interface AnimationEntryApiEntity {
@@ -9,11 +10,5 @@ export interface AnimationEntryApiEntity {
 }
 
 export function fromApi(entry: AnimationEntryApiEntity): AnimationEntry {
-    return { name: entry.name, animation: { 
-        /* TODO */
-            toApiEntity(): AnimationPrimitiveAPIEntity { return { type: 'Wait' } },
-            timeSec: 0,
-            getIcon(): JSX.Element { return <Circle /> },
-            getName(): string { return 'TODO' },
-        } };
+    return { name: entry.name, animation: fromApiAnimation(entry.animation)};
 }
