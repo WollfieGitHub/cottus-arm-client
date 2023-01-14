@@ -10,7 +10,6 @@ import {AnimationPreview} from "../../../Domain/Models/Animation/AnimationPrevie
 
 const CottusArmView = (props: {
     setArmReady: (ready: boolean|undefined) => void, 
-    visibility: string,
     datasource: CottusArmDatasource,
     armRef: MutableRefObject<CottusArm|undefined>,
     animationPreview?: AnimationPreview
@@ -30,7 +29,7 @@ const CottusArmView = (props: {
     return (
         <Card sx={{
             display: 'flex', padding: 2, width: "fit-content", margin: "0 20 0 20",
-            flexDirection: 'column', visibility: props.visibility
+            flexDirection: 'column'
         }}>
             <div className={"canvas"} >
                 <canvas width={canvasWidth} height={canvasHeight} ref={canvasRef}

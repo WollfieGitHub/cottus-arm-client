@@ -1,45 +1,33 @@
-import {useViewModel} from "../../../../Presentation/Cottus/CottusArm/Animation/Prebuilt/LineToAnimationViewModel";
-import {
-    Accordion,
-    AccordionDetails,
-    AccordionSummary, Divider,
-    FormControlLabel,
-    FormGroup, InputAdornment, Stack,
-    Switch, TextField,
-    Typography
-} from "@mui/material";
-import {ExpandMore} from "@mui/icons-material"
-import {PositionSpecificationView} from "../../CottusArm/PositionSpecificationView";
 import {Vector3D} from "../../../../Domain/Models/Maths/Vector3D";
-import React, {ChangeEvent, useEffect} from "react";
 import {AnimationPrimitive} from "../../../../Domain/Models/Animation/AnimationPrimitive";
+import {useViewModel} from "../../../../Presentation/Cottus/CottusArm/Animation/Prebuilt/SemicircleToAnimationViewModel";
+import React, {ChangeEvent, useEffect} from "react";
+import {Divider, InputAdornment, Stack, Switch, TextField, Typography} from "@mui/material";
+import {PositionSpecificationView} from "../../CottusArm/PositionSpecificationView";
 
-export const LineToAnimationView = (props: {
+const SemicircleToAnimationView = (props: {
     position: Vector3D|undefined,
     setAnimation: (animation: AnimationPrimitive) => void
 }) => {
     const { position: currentPosition } = props;
-    
-    const { 
+
+    const {
         setPosition, position,
-        setRelative, setTime
+        setRelative, setTime,
+        setAngleDeg, setCircleDirection, circleDirection
     } = useViewModel(props.setAnimation);
-    
+
     // When the position of the end effector captured by the parenting
     // view changes, change the position
     useEffect(() => {
         if (currentPosition === undefined) { return; }
-        
-        setPosition(currentPosition);
-    }, [currentPosition])
 
-    const handleRelativeChange = (e: ChangeEvent<HTMLInputElement>) => {
-        setRelative(e.target.checked);
-    }
-    
-    const handleTimeChange = (e: ChangeEvent<HTMLInputElement>) => {
-        setTime(parseFloat(e.target.value));
-    }
+        setPosition(currentPosition);
+    }, [ currentPosition ])
+
+    const handleRelativeChange = (e: ChangeEvent<HTMLInputElement>) => { setRelative(e.target.checked); }
+    const handleTimeChange = (e: ChangeEvent<HTMLInputElement>) => { setTime(parseFloat(e.target.value)); }
+    const handleAngleChange = (e: ChangeEvent<HTMLInputElement>) => { setAngleDeg(parseFloat(e.target.value)); }
 
     return (<div className={"line-to-animation"} style={{width: '100%'}}>
         { /* Doesn't work */ }
@@ -48,9 +36,15 @@ export const LineToAnimationView = (props: {
                        InputProps={{endAdornment: <InputAdornment position="end">sec</InputAdornment>,}}
             />
         </div>
+        <div className={'duration'} style={{marginBottom: 10}}>
+            <TextField label={'Angle'} onChange={handleAngleChange}
+                       InputProps={{endAdornment: <InputAdornment position="end">deg</InputAdornment>,}}
+            />
+        </div>
         <Divider />
         <div className={'position'} style={{marginTop: 10}}>
             <PositionSpecificationView setPos={setPosition} pos={position} label={'End Position'} />
+            <PositionSpecificationView setPos={setCircleDirection} pos={circleDirection} label={'Circle Direction'} />
             <Stack direction={'row'} spacing={1} alignItems={'center'} justifyContent={'flex-start'}>
                 <Typography>Absolute</Typography>
                 <Switch defaultChecked onChange={handleRelativeChange}/>
@@ -59,3 +53,5 @@ export const LineToAnimationView = (props: {
         </div>
     </div>)
 }
+
+export default SemicircleToAnimationView;

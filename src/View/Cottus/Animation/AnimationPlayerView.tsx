@@ -11,6 +11,7 @@ const AnimationPlayerView = (props: {
     animations: AnimationEntry[],
     hidePreview: () => void,
     playAnimation: (name: string) => Promise<boolean>
+    disabled: boolean
 }) => {
 
     const {
@@ -35,13 +36,14 @@ const AnimationPlayerView = (props: {
     
     return (
         <div className={'animation-player'}>
-            <ToggleButtonGroup
-                color={'primary'}
-                value={selectedAnimation?.name}
+            <ToggleButtonGroup fullWidth
+                color={'primary'} value={selectedAnimation?.name}
                 exclusive onChange={handleChange}
                 orientation={'vertical'}
             >
-                { animations.map(animation => AnimationView(animation, handleHoverBegin, handleHoverEnd, props.playAnimation)) }
+                { animations.map((animation, i) => AnimationView(
+                    animation, handleHoverBegin, handleHoverEnd, props.playAnimation, i, props.disabled
+                )) }
             </ToggleButtonGroup>
         </div>
     );
@@ -51,16 +53,19 @@ const AnimationView = (
     animation: AnimationEntry, 
     onHoverBegin: (animation: AnimationEntry) => void,
     onHoverEnd: () => void,
-    playAnimation: (name: string) => Promise<boolean>
+    playAnimation: (name: string) => Promise<boolean>,
+    key: number,
+    disabled: boolean
 ): JSX.Element => {
     
     return (
         <ToggleButton 
+            key={key}
             value={animation.name} 
             onMouseEnter={e => onHoverBegin(animation)}
-            onMouseLeave={e => onHoverEnd()}
-            fullWidth
+            fullWidth disabled={disabled}
             onClick={() => playAnimation(animation.name)}
+            sx={{justifyContent: 'left'}}
         >
             {animation.name}
         </ToggleButton>

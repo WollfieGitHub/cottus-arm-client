@@ -28,10 +28,12 @@ const Dashboard = () => {
         };
     }, []);
 
-    const visibility: string = (armReady !== undefined && armReady) ? 'hidden' : 'visible';
+    const visibility: string = (!datasource.connected) ? 'hidden' : 'visible';
     const reconnect = () => { datasource.resetReconnectionDelay(); }
     
     useEffect(() => { setReconnectionDelay(datasource.getCurrentDelay); }, [time])
+    
+    const disabled = armRef.current === undefined || !armRef.current?.ready;
     
     const content = (): JSX.Element|undefined => {
         
@@ -41,13 +43,13 @@ const Dashboard = () => {
                 margin: "0 auto 0 auto",
                 width: "max-content", height: 'max-content'
             }}>
-                <AnimationControlView sx={{padding: 1, width: 380, visibility}} 
-                                      armRef={armRef} setAnimationPreview={setAnimationPreview} />
+                <AnimationControlView sx={{padding: 1, width: 380}} disabled={disabled}
+                                      armRef={armRef} setAnimationPreview={setAnimationPreview}/>
                 
-                <CottusArmView setArmReady={setArmReady} visibility={visibility} datasource={datasource} 
+                <CottusArmView setArmReady={setArmReady} datasource={datasource} 
                                armRef={armRef} animationPreview={animationPreview} />
                 
-                <EndEffectorControlView sx={{padding: 1, width: 380, visibility}} />
+                <EndEffectorControlView sx={{padding: 1, width: 380}} disabled={disabled}/>
             </Box>);
         } else {
             return (<Stack direction={'column'} className={'dashboard-content'} sx={{width: 400}} alignItems={'center'}>

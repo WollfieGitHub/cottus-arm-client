@@ -7,10 +7,11 @@ import {AnimationPreview} from "../../../Domain/Models/Animation/AnimationPrevie
 import {AnimationPrimitive} from "../../../Domain/Models/Animation/AnimationPrimitive";
 import {useAnimationControlViewModel} from "../../../Presentation/Cottus/CottusArm/Animation/AnimationControlViewModel";
 
-const AnimationControlView = ({sx, armRef, setAnimationPreview}: {
+const AnimationControlView = ({sx, armRef, setAnimationPreview, disabled}: {
     sx?: SxProps<Theme>, 
     armRef: MutableRefObject<CottusArm|undefined>,
-    setAnimationPreview: (preview?: AnimationPreview) => void
+    setAnimationPreview: (preview?: AnimationPreview) => void,
+    disabled: boolean
 }) => {
 
     const [value, setValue] = React.useState(0);
@@ -39,12 +40,14 @@ const AnimationControlView = ({sx, armRef, setAnimationPreview}: {
                 <Tabs value={value} onChange={handleChange} aria-label="basic tabs example" variant={'fullWidth'}
                       textColor={'secondary'} indicatorColor={'primary'}>
                     <Tab label="Play" />
-                    <Tab label="Record" />
+                    <Tab label="Record" disabled={disabled} onClick={hidePreview}/>
                 </Tabs>
             </Box>
             <TabPanel value={value} index={0}>
                 <AnimationPlayerView setAnimationToPreview={setAnimationToPreview} animations={animations}
-                    getAnimationList={getAnimationList} hidePreview={hidePreview} playAnimation={playAnimation} /> 
+                    getAnimationList={getAnimationList} hidePreview={hidePreview} 
+                     playAnimation={playAnimation} disabled={disabled}
+                /> 
             </TabPanel> 
             <TabPanel value={value} index={1}> 
                 <AnimationRecorderView arm={armRef} setAnimationToPreview={setAnimationToPreview}

@@ -47,7 +47,7 @@ export class Vector3D {
         return this.dot(normal) / normal.normSquared();
     }
 
-    public normalized(): Vector3D {
+    public normalized = (): Vector3D => {
         const norm: number = this.norm();
         return new Vector3D(this.x/norm, this.y/norm, this.z/norm);
     }

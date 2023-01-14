@@ -28,7 +28,7 @@ export default class AnimationDatasourceAPIImpl implements AnimationDatasource {
 
     async preview(animation: AnimationPrimitive): Promise<AnimationPreview> {
         const response = await typedPost<AnimationPrimitiveAPIEntity, AnimationPreviewAPIEntity>(
-            `/api/arm-animation/preview?nb_points=${20}`, animation.toApiEntity()
+            `/api/arm-animation/preview?nb_points=${5}`, animation.toApiEntity()
         )
         const data = await response.json();
         return fromApiAnimationPreview(data);

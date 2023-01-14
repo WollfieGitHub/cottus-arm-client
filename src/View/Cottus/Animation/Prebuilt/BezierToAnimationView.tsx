@@ -1,4 +1,4 @@
-import {useViewModel} from "../../../../Presentation/Cottus/CottusArm/Animation/LineToAnimationViewModel";
+import {useViewModel} from "../../../../Presentation/Cottus/CottusArm/Animation/Prebuilt/LineToAnimationViewModel";
 import {
     Accordion,
     AccordionDetails,

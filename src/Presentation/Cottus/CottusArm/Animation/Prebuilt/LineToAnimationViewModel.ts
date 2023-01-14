@@ -1,7 +1,7 @@
 import {useEffect, useState} from "react";
-import {LineToAnimation} from "../../../../Domain/Models/Animation/Prebuilt/LineToAnimation";
-import {Vector3D} from "../../../../Domain/Models/Maths/Vector3D";
-import {AnimationPrimitive} from "../../../../Domain/Models/Animation/AnimationPrimitive";
+import {LineToAnimation} from "../../../../../Domain/Models/Animation/Prebuilt/LineToAnimation";
+import {Vector3D} from "../../../../../Domain/Models/Maths/Vector3D";
+import {AnimationPrimitive} from "../../../../../Domain/Models/Animation/AnimationPrimitive";
 
 export const useViewModel = (
     setAnimation: (animation: AnimationPrimitive) => void

@@ -17,6 +17,7 @@ import {BezierToAnimationView} from "./Prebuilt/BezierToAnimationView";
 import WaitAnimationView from "./Prebuilt/WaitAnimationView";
 import {Vector3D} from "../../../Domain/Models/Maths/Vector3D";
 import {AnimationPrimitive} from "../../../Domain/Models/Animation/AnimationPrimitive";
+import SemicircleToAnimationView from "./Prebuilt/SemicircleToAnimationView";
 
 const PrebuiltAnimationSelectorView = (props: {
     recording: boolean,
@@ -41,7 +42,7 @@ const PrebuiltAnimationSelectorView = (props: {
         switch (prebuiltAnimationIndex) {
             case 0: { return (<LineToAnimationView position={props.position} setAnimation={props.setAnimation}/>); }
             case 1: { return (<BezierToAnimationView />); }
-            case 2: { return (<BezierToAnimationView />); }
+            case 2: { return (<SemicircleToAnimationView position={props.position} setAnimation={props.setAnimation}/>); }
             case 3: { return (<WaitAnimationView />); }
         }
         return undefined;
