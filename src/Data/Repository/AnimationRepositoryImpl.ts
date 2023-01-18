@@ -10,9 +10,7 @@ export class AnimationRepositoryImpl implements AnimationRepository {
 
     private readonly datasource: AnimationDatasource;
 
-    constructor(datasource: AnimationDatasource) {
-        this.datasource = datasource;
-    }
+    constructor(datasource: AnimationDatasource) { this.datasource = datasource; }
 
     async save(name: string, animation: AnimationPrimitive): Promise<boolean> {
         return this.datasource.save(name, animation);

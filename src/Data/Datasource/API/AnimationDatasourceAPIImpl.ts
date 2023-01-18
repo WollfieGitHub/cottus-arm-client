@@ -10,6 +10,9 @@ import {
 import {AnimationEntry} from "../../../Domain/Models/Animation/AnimationEntry";
 import {AnimationEntryApiEntity, fromApi as fromApiEntry} from "./Entity/Animation/AnimationEntryApiEntity";
 
+/**
+ * Data source for the animations, retrieves the data from the server's API
+ */
 export default class AnimationDatasourceAPIImpl implements AnimationDatasource {
     
     async save(name: string, animation: AnimationPrimitive): Promise<boolean> {
